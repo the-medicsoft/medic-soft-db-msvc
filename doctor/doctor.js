@@ -9,7 +9,6 @@ doctorSchema.add({
     default: false
   },
   DOJ: Date,
-  isActive: Boolean,
   qualifications: [
     {
       type: String

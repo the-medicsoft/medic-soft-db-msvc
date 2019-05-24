@@ -39,7 +39,8 @@ exports.userBaseSchema = {
             type: "string"
           }
         }
-      }
+      },
+      isActive: { type: "boolean" }
     }
   }
 };
