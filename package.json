@@ -1,0 +1,38 @@
+{
+  "name": "medic-soft-db-msvc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "contributors": [
+    {
+      "name": "Aakash Verma",
+      "email": "aakashvermaee@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/the-medicsoft/medic-soft-db-msvc.git"
+  },
+  "keywords": [
+    "Microservice",
+    "Mongo",
+    "Micro",
+    "msvc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/the-medicsoft/medic-soft-db-msvc.git#readme",
+  "dependencies": {
+    "fastify": "^2.3.0",
+    "mongoose": "^5.5.2"
+  },
+  "devDependencies": {
+    "dotenv": "^8.0.0",
+    "mongoose-seeder": "^1.2.1",
+    "swagger": "^0.7.5"
+  }
+}
