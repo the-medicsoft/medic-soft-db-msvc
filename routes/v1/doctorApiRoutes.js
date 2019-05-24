@@ -1,30 +1,31 @@
 const { doctors } = require("../../doctor");
 const { userBaseSchema } = require("./routeschemas");
 
-const doctorRequestBodySchema = userBaseSchema;
-
-// required keys/fields
-doctorRequestBodySchema.body.required = ["department", "designation"];
+const doctorRequestBodySchema = {
+  type: userBaseSchema.type,
+  required: ["department", "designation"],
+  properties: userBaseSchema.properties
+};
 
 // doctor schema
-doctorRequestBodySchema.body.properties.isAdmin = { type: "boolean" };
+doctorRequestBodySchema.properties.isAdmin = { type: "boolean" };
 
-doctorRequestBodySchema.body.properties.qualifications = {
+doctorRequestBodySchema.properties.qualifications = {
   type: "array",
   items: {
     type: "string"
   }
 };
 
-doctorRequestBodySchema.body.properties.isActive = { type: "boolean" };
+doctorRequestBodySchema.properties.isActive = { type: "boolean" };
 
-doctorRequestBodySchema.body.properties.department = { type: "string" };
+doctorRequestBodySchema.properties.department = { type: "string" };
 
-doctorRequestBodySchema.body.properties.designation = { type: "string" };
+doctorRequestBodySchema.properties.designation = { type: "string" };
 
-doctorRequestBodySchema.body.properties.DOJ = { type: "string" };
+doctorRequestBodySchema.properties.DOJ = { type: "string" };
 
-doctorRequestBodySchema.body.properties.visitingTime = {
+doctorRequestBodySchema.properties.visitingTime = {
   type: "array",
   items: {
     type: "object",
@@ -54,7 +55,9 @@ exports.doctorApiRoutes = [
   {
     method: "POST",
     url: "/api/v1/doctors",
-    schema: doctorRequestBodySchema,
+    schema: {
+      body: doctorRequestBodySchema
+    },
     handler: doctors.createDoctor
   },
   {
