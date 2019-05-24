@@ -2,22 +2,37 @@ const { Client } = require("./client");
 
 exports.getClients = async (req, res) => {
   try {
-    let response = Client.getClients();
+    let response = await Client.getClients();
     
-    res.send(response);
+    res
+      .code(response.statusCode)
+      .send(response);
   } catch (err) {}
 };
 
 exports.getClientByEmail = async (req, res) => {
   try {
-    let response = Client.getClientByEmail(req.params.email);
+    let response = await Client.getClientByEmail(req.params.email);
 
-    res.send(response);
-  } catch (err) {}
+    res
+      .code(response.statusCode)
+      .send(response);
+  } catch (err) {
+    res
+      .code(err.statusCode)
+      .send(err);
+  }
 };
 
 exports.createClient = async (req, res) => {
   try {
+    const client = new Client(req.body);
+
+    let response = await Client.createClient(client);
+
+    res
+      .code(response.statusCode)
+      .send(response);
   } catch (err) {}
 };
 
