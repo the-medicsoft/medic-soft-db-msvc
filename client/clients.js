@@ -38,10 +38,20 @@ exports.createClient = async (req, res) => {
 
 exports.updateClient = async (req, res) => {
   try {
+    let response = await Client.updateClient(req.params.email, req.body);
+
+    res
+      .code(response.statusCode)
+      .send(response);
   } catch (err) {}
 };
 
 exports.deleteClient = async (req, res) => {
   try {
+    let response = await Client.deleteClient(req.params.email);
+
+    res
+      .code(response.statusCode)
+      .send(response);
   } catch (err) {}
 };
