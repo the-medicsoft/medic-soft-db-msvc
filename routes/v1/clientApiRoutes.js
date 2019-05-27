@@ -1,7 +1,10 @@
 const { clients } = require("../../client");
 const { userBaseSchema } = require("./routeschemas");
 
-const clientRequestBodySchema = userBaseSchema;
+const clientRequestBodySchema = {
+  type: userBaseSchema.type,
+  properties: userBaseSchema.properties
+};
 
 exports.clientApiRoutes = [
   {
@@ -17,7 +20,9 @@ exports.clientApiRoutes = [
   {
     method: "POST",
     url: "/api/v1/clients",
-    schema: clientRequestBodySchema,
+    schema: {
+      body: clientRequestBodySchema
+    },
     handler: clients.createClient
   },
   {

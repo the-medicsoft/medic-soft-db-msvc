@@ -23,7 +23,9 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }
+  },
+  isActive: { type: Boolean, default: true },
+  password: { type: String, required: true }
 });
 
 exports.userSchema = userSchema;

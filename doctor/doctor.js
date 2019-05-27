@@ -1,7 +1,7 @@
-const db = require("../db/db");
+const { mongoose } = require("../db/db");
 const { userSchema } = require("../db/shared_schemas/");
 
-const doctorSchema = userSchema;
+const doctorSchema = new mongoose.Schema(userSchema);
 
 doctorSchema.add({
   isAdmin: {
@@ -9,7 +9,6 @@ doctorSchema.add({
     default: false
   },
   DOJ: Date,
-  isActive: Boolean,
   qualifications: [
     {
       type: String
@@ -25,4 +24,4 @@ doctorSchema.add({
   visitingTime: [{ branch: String, timings: Date }]
 });
 
-exports.Doctor = db.mongoose.model("Doctor", doctorSchema);
+exports.Doctor = mongoose.model("Doctor", doctorSchema);
