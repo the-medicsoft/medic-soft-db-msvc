@@ -7,7 +7,7 @@ const clientSchema = new mongoose.Schema(userSchema);
 clientSchema.statics.getClients = async function () {
     try {
         // remove _id and _v properties from resultset
-        const clientResultFilter = '-_id -__v';
+        const clientResultFilter = '-_id -__v -password';
 
         let clients = await this.find({}, clientResultFilter);
 
@@ -18,7 +18,14 @@ clientSchema.statics.getClients = async function () {
             total: clients.length,
             data: clients
         };
-    } catch (err) { }
+    } catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
+        };
+    }
 }
 
 clientSchema.statics.getClientByEmail = async function (email) {
@@ -43,7 +50,14 @@ clientSchema.statics.getClientByEmail = async function (email) {
                 statusText: "Not Found",
                 message: 'client Not found!'
             };
-    } catch (err) { }
+    } catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
+        };
+    }
 }
 
 clientSchema.statics.createClient = async function (newClient) {
@@ -64,20 +78,31 @@ clientSchema.statics.createClient = async function (newClient) {
 
         let client = await this.create(newClient)
 
+        if (client && client.contacts.email === email) {
+            return {
+                success: true,
+                statusCode: 200,
+                statusText: "OK",
+                message: `client inserted`,
+                data: client
+            };
+        } else {
+            throw new Error();
+        }
+    } catch (err) {
         return {
-            success: true,
-            statusCode: 200,
-            statusText: "OK",
-            message: `client inserted`,
-            data: client
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
         };
-    } catch (err) { }
+    }
 }
 
 clientSchema.statics.updateClient = async function (email, updateClientWith) {
     try {
         let client = await this.findOneAndUpdate({ "contacts.email": email }, updateClientWith, { useFindAndModify: true });
-        
+
         if (client) {
             return {
                 success: true,
@@ -94,7 +119,14 @@ clientSchema.statics.updateClient = async function (email, updateClientWith) {
             statusText: "Internal Server Error",
             message: 'client not updated'
         };
-    } catch (err) { }
+    } catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
+        };
+    }
 }
 
 clientSchema.statics.deleteClient = async function (email) {
@@ -116,7 +148,14 @@ clientSchema.statics.deleteClient = async function (email) {
             statusText: "Internal Server Error",
             message: 'client not deleted'
         };
-    } catch (err) { }
+    } catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
+        };
+    }
 }
 
 exports.Client = mongoose.model("Client", clientSchema);
