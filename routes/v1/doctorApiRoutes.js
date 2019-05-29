@@ -17,8 +17,6 @@ doctorRequestBodySchema.properties.qualifications = {
   }
 };
 
-doctorRequestBodySchema.properties.isActive = { type: "boolean" };
-
 doctorRequestBodySchema.properties.department = { type: "string" };
 
 doctorRequestBodySchema.properties.designation = { type: "string" };
