@@ -76,7 +76,7 @@ doctorSchema.statics.getDoctorByEmail = async function (email) {
                 message: 'doctor found!',
                 data: { doctor }
             };
-        else if(!doctor)
+        else if (!doctor)
             return {
                 success: false,
                 statusCode: 404,
@@ -160,8 +160,53 @@ doctorSchema.statics.createDoctor = async function (newDoctor) {
     }
 };
 
-doctorSchema.statics.updateDoctorByEmail = async function (email, updateDoctorWith) { };
+doctorSchema.statics.updateDoctorByEmail = async function (email, updateDoctorWith) {
+    try {
+        let doctor = await this.findOneAndUpdate({ "contacts.email": email }, updateDoctorWith, { useFindAndModify: true });
 
-doctorSchema.statics.deleteDoctorByEmail = async function (email) { };
+        if (doctor) {
+            return {
+                success: true,
+                statusCode: 200,
+                statusText: "OK",
+                message: `doctor updated`,
+                data: doctor
+            };
+        } else {
+            throw new Error();
+        }
+    } catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
+        };
+    }
+};
+
+doctorSchema.statics.deleteDoctorByEmail = async function (email) { 
+    try {
+        let doctor = await this.findOneAndUpdate({ "contacts.email": email }, { isActive: false }, { useFindAndModify: true });
+
+        if (doctor && doctor.isActive === false) {
+            return {
+                success: true,
+                statusCode: 200,
+                statusText: "OK",
+                message: 'doctor deleted'
+            };
+        } else {
+            throw new Error();
+        }
+    } catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            statusText: "Internal Server Error",
+            message: err.message
+        };
+    }
+};
 
 exports.Doctor = mongoose.model("Doctor", doctorSchema);

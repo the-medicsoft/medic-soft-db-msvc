@@ -47,15 +47,37 @@ exports.createDoctor = async (req, res) => {
     res
       .code(response.statusCode)
       .send(response);
-  } catch (err) {}
+  } catch (err) {
+    res
+      .code(err.statusCode)
+      .send(err);
+  }
 };
 
 exports.updateDoctor = async (req, res) => {
   try {
-  } catch (err) {}
+    let response = await Doctor.updateDoctorByEmail(req.params.email, req.body);
+    
+    res
+      .code(response.statusCode)
+      .send(response);
+  } catch (err) {
+    res
+      .code(err.statusCode)
+      .send(err);
+  }
 };
 
 exports.deleteDoctor = async (req, res) => {
   try {
-  } catch (err) {}
+    let response = await Doctor.deleteDoctorByEmail(req.params.email);
+
+    res
+      .code(response.statusCode)
+      .send(response);
+  } catch (err) {
+    res
+      .code(err.statusCode)
+      .send(err);
+  }
 };
