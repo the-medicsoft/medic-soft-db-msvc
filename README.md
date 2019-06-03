@@ -34,6 +34,7 @@ This microservice is one of the critical part of this application and, is used b
 ### Doctors
 * **[GET] Get all Doctors:** */api/v1/doctors* 
     ##### Returns all the doctors in JSON format
+    ##### Or, Just pass query strings to query doctor(s) data ex. */api/v1/doctors?department=ENT*.
 * **[GET] Get doctor by email:** */api/v1/doctors/:email*
     ##### Returns the doctor based on email address in JSON format.
 * **[POST] Creates new doctor:** */api/v1/doctors*
