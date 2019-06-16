@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
       required: true
     },
     line2: String,
+    city: String,
     zipCode: Number,
     state: String,
     country: String
@@ -25,7 +26,9 @@ const userSchema = new mongoose.Schema({
     }
   },
   isActive: { type: Boolean, default: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  isDoctor: { type: Boolean, default: false },
+  gender: { type: String, required: true }
 });
 
 exports.userSchema = userSchema;

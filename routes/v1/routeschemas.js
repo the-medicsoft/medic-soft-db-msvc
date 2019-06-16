@@ -1,6 +1,6 @@
 exports.userBaseSchema = {
   type: "object",
-  required: ["password"],
+  required: ["password", "gender"],
   properties: {
     firstName: { type: "string" },
     lastName: { type: "string" },
@@ -13,6 +13,9 @@ exports.userBaseSchema = {
           type: "string"
         },
         line2: {
+          type: "string"
+        },
+        city: {
           type: "string"
         },
         zipCode: {
@@ -41,6 +44,8 @@ exports.userBaseSchema = {
         }
       }
     },
-    isActive: { type: "boolean" }
+    isActive: { type: "boolean" },
+    isDoctor: { type: "boolean" },
+    gender: { type: "string" }
   }
 };
