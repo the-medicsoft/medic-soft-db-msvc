@@ -3,7 +3,11 @@ const config = require("./config/config");
 const { NODE_ENV } = process.env || config;
 
 if (NODE_ENV !== "production") {
-  require("dotenv").config();
+  const checkEnv = require("dotenv").config();
+
+  if (checkEnv.error) {
+    throw new Error(`${checkEnv.error}...Exiting`);
+  }
 }
 
 const v1ApiRoutes = require("./routes/v1/");
