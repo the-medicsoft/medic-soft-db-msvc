@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const config = require("../config/config");
 
 const {
-  MONGO_DB_URL,
-  MONGO_USER,
-  MONGO_PASSWORD
-} = process.env || config;
+  MONGO_DB_URL = config.MONGO_DB_URL,
+  MONGO_USER = config.MONGO_USER,
+  MONGO_PASSWORD = config.MONGO_PASSWORD
+} = process.env;
 
 async function connect(mongoDbURL) {
   try {
