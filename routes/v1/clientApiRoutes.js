@@ -3,6 +3,7 @@ const { userBaseSchema } = require("./routeschemas");
 
 const clientRequestBodySchema = {
   type: userBaseSchema.type,
+  required: ["password", "gender"],
   properties: userBaseSchema.properties
 };
 

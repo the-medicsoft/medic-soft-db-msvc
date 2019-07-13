@@ -3,7 +3,7 @@ const { userBaseSchema } = require("./routeschemas");
 
 const doctorRequestBodySchema = {
   type: userBaseSchema.type,
-  required: ["designation"],
+  required: ["designation", "password", "gender"],
   properties: userBaseSchema.properties
 };
 

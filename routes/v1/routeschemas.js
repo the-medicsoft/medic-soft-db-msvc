@@ -1,6 +1,5 @@
 exports.userBaseSchema = {
   type: "object",
-  required: ["password", "gender"],
   properties: {
     firstName: { type: "string" },
     lastName: { type: "string" },
