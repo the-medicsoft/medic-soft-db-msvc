@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const config = require("../config/config");
+const config = require('../config/config');
 
 const {
   MONGO_DB_URL = config.MONGO_DB_URL,
@@ -19,11 +19,11 @@ async function connect(mongoDbURL) {
     const client = await mongoose.connect(mongoDbURL, authData);
 
     if (client) {
-      console.log("Connected to MongoDb...");
+      console.log('Connected to MongoDb...');
     }
-  }
-  catch (err) {
-    console.error("Connection to MongoDb failed" + err);
+  } catch (err) {
+    console.error('Connection to MongoDb failed:', err);
+    process.exit(1);
   }
 }
 

@@ -1,50 +1,50 @@
 exports.userBaseSchema = {
-  type: "object",
+  type: 'object',
   properties: {
-    firstName: { type: "string" },
-    lastName: { type: "string" },
-    password: { type: "string" },
+    firstName: { type: 'string' },
+    lastName: { type: 'string' },
+    password: { type: 'string' },
     address: {
-      type: "object",
-      required: ["line1"],
+      type: 'object',
+      required: ['line1'],
       properties: {
         line1: {
-          type: "string"
+          type: 'string'
         },
         line2: {
-          type: "string"
+          type: 'string'
         },
         city: {
-          type: "string"
+          type: 'string'
         },
         zipCode: {
-          type: "integer"
+          type: 'integer'
         },
         state: {
-          type: "string"
+          type: 'string'
         },
         country: {
-          type: "string"
+          type: 'string'
         }
       }
     },
     contacts: {
-      type: "object",
-      required: ["email"],
+      type: 'object',
+      required: ['email'],
       properties: {
         phones: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "string"
+            type: 'string'
           }
         },
         email: {
-          type: "string"
+          type: 'string'
         }
       }
     },
-    isActive: { type: "boolean" },
-    isDoctor: { type: "boolean" },
-    gender: { type: "string" }
+    isActive: { type: 'boolean' },
+    isDoctor: { type: 'boolean' },
+    gender: { type: 'string' }
   }
 };
