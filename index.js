@@ -10,7 +10,8 @@ if (isNodeEnvLower) {
   require('dotenv').config();
 }
 
-const { HOST = config.HOST, PORT = config.PORT } = process.env;
+const HOST = config.HOST;
+const { PORT = config.PORT } = process.env;
 
 const app = fastify({
   logger: {

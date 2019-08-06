@@ -1,8 +1,8 @@
+const { clientApiRoutes } = require('./clientApiRoutes');
+const { doctorApiRoutes } = require('./doctorApiRoutes');
+
 module.exports = function(app) {
-  const v1Routes = [
-    require('./clientApiRoutes').clientApiRoutes,
-    require('./doctorApiRoutes').doctorApiRoutes
-  ].flat(2);
+  let v1Routes = new Array().concat(clientApiRoutes, doctorApiRoutes);
 
   for (let route of v1Routes) {
     app.route(route);
