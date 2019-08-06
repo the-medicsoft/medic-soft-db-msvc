@@ -1,0 +1,10 @@
+{
+  "extends": ["airbnb", "prettier", "eslint:recommended"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-useless-catch": "off",
+    "no-empty": "warn",
+    "no-console": "warn"
+  }
+}
