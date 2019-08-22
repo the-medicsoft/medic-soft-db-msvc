@@ -34,48 +34,54 @@ doctorRequestBodySchema.properties.visitingTime = {
   }
 };
 
-exports.doctorApiRoutes = [
-  {
-    method: 'GET',
-    url: '/api/v1/doctors',
-    handler: doctors.getDoctors
-  },
-  {
-    method: 'GET',
-    url: '/api/v1/doctors/:email',
-    handler: doctors.getDoctorByEmail,
-    schema: {
-      params: {
-        email: { type: 'string' }
+module.exports = function(fastify, opts, done) {
+  fastify.get('/doctors', doctors.getDoctors);
+
+  fastify.get(
+    '/doctors/:email',
+    {
+      schema: {
+        params: {
+          email: { type: 'string' }
+        }
       }
-    }
-  },
-  {
-    method: 'POST',
-    url: '/api/v1/doctors',
-    schema: {
-      body: doctorRequestBodySchema
     },
-    handler: doctors.createDoctor
-  },
-  {
-    method: 'PUT',
-    url: '/api/v1/doctors/:email',
-    handler: doctors.updateDoctor,
-    schema: {
-      params: {
-        email: { type: 'string' }
+    doctors.getDoctorByEmail
+  );
+
+  fastify.post(
+    '/doctors',
+    {
+      schema: {
+        body: doctorRequestBodySchema
       }
-    }
-  },
-  {
-    method: 'DELETE',
-    url: '/api/v1/doctors/:email',
-    handler: doctors.deleteDoctor,
-    schema: {
-      params: {
-        email: { type: 'string' }
+    },
+    doctors.createDoctor
+  );
+
+  fastify.put(
+    '/doctors/:email',
+    {
+      schema: {
+        params: {
+          email: { type: 'string' }
+        }
       }
-    }
-  }
-];
+    },
+    doctors.updateDoctor
+  );
+
+  fastify.delete(
+    '/doctors/:email',
+    {
+      schema: {
+        params: {
+          email: { type: 'string' }
+        }
+      }
+    },
+    doctors.deleteDoctor
+  );
+
+  done();
+};

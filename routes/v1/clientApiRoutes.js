@@ -7,33 +7,23 @@ const clientRequestBodySchema = {
   properties: userBaseSchema.properties
 };
 
-exports.clientApiRoutes = [
-  {
-    method: 'GET',
-    url: '/api/v1/clients',
-    handler: clients.getClients
-  },
-  {
-    method: 'GET',
-    url: '/api/v1/clients/:email',
-    handler: clients.getClientByEmail
-  },
-  {
-    method: 'POST',
-    url: '/api/v1/clients',
-    schema: {
-      body: clientRequestBodySchema
+module.exports = function(fastify, opts, done) {
+  fastify.get('/clients', clients.getClients);
+
+  fastify.get('/clients/:email', clients.getClientByEmail);
+
+  fastify.post(
+    '/clients',
+    {
+      schema: {
+        body: clientRequestBodySchema
+      }
     },
-    handler: clients.createClient
-  },
-  {
-    method: 'PUT',
-    url: '/api/v1/clients/:email',
-    handler: clients.updateClient
-  },
-  {
-    method: 'DELETE',
-    url: '/api/v1/clients/:email',
-    handler: clients.deleteClient
-  }
-];
+    clients.createClient
+  );
+
+  fastify.put('/clients/:email', clients.updateClient);
+
+  fastify.delete('/clients/:email', clients.deleteClient);
+  done();
+};

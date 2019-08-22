@@ -21,20 +21,12 @@ const app = fastify({
   }
 });
 
-// register v1 API routes
-require('./routes/v1/')(app);
+// register API routes
+require('./routes/routesRegister')(app);
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'origin, token, x-origin, auth'
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, GET, POST, PUT, DELETE'
-  );
-  next();
+app.register(require('fastify-cors'), {
+  origin: '*',
+  methods: 'GET, PUT, POST, DELETE, OPTIONS'
 });
 
 app.get('/', (req, res) => res.send('Welcome to The MedicSoft'));

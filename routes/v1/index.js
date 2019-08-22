@@ -1,10 +1,6 @@
-module.exports = function(app) {
-  let v1Routes = new Array().concat(
-    require('./clientApiRoutes').clientApiRoutes,
-    require('./doctorApiRoutes').doctorApiRoutes
-  );
+const registerOpts = { prefix: '/api/v1' };
 
-  for (let route of v1Routes) {
-    app.route(route);
-  }
+module.exports = function(app) {
+  app.register(require('./clientApiRoutes'), registerOpts);
+  app.register(require('./doctorApiRoutes'), registerOpts);
 };
