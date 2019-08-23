@@ -46,7 +46,7 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.2",
-    "mongoose-seeder": "^1.2.1",
+    "mongoose-data-seed": "^2.1.1",
     "prettier": "^1.18.2",
     "swagger": "^0.7.5"
   }
