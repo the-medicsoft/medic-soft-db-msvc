@@ -20,7 +20,10 @@ doctorSchema.add({
     }
   ],
   designation: { type: String, required: true },
-  department: { type: String },
+  department: {
+    type: mongoose.Schema.Types.String,
+    ref: 'Department'
+  },
   visitingTime: [{ branch: String, timings: Date }]
 });
 
@@ -39,7 +42,9 @@ doctorSchema.statics.getDoctors = async function() {
     // remove _id, _v and password properties from resultset
     const doctorResultFilter = '-_id -__v -password';
 
-    let doctors = await this.find({}, doctorResultFilter);
+    let doctors = await this.find({}, doctorResultFilter).populate({
+      path: 'department'
+    });
 
     if (doctors.length) {
       return {
