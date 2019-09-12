@@ -28,37 +28,28 @@ clientSchema.statics.getClients = async function() {
   }
 };
 
-clientSchema.statics.getClientByEmail = async function(email) {
+clientSchema.statics.getClientByQuery = async function(query) {
   try {
     // remove _id and _v properties from resultset
     const clientResultFilter = '-_id -__v';
 
-    let client = await this.findOne(
-      { 'contacts.email': email },
-      clientResultFilter
-    );
+    let clients = await this.find(query, clientResultFilter);
 
-    if (client)
+    if (clients.length) {
       return {
         success: true,
         statusCode: 200,
         statusText: 'OK',
-        message: 'client found!',
-        data: { client }
+        total: clients.length,
+        data: clients
       };
-    else
-      return {
-        success: false,
-        statusCode: 404,
-        statusText: 'Not Found',
-        message: 'client Not found!'
-      };
+    } else throw new Error();
   } catch (err) {
     return {
       success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
+      statusCode: 404,
+      statusText: 'Not Found',
+      message: 'Not Found'
     };
   }
 };

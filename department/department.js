@@ -1,14 +1,15 @@
 const { mongoose } = require('../db/db');
 
 const DepartmentSchema = new mongoose.Schema({
-  dept_name: { type: String, required: true },
+  deptName: { type: String, required: true },
+  description: { type: String },
   deptNo: { type: Number, required: true }
 });
 
 DepartmentSchema.statics = {
   getDepartments: async function() {
-    // const departments = ['Chest', 'Cardio', 'General', 'ENT'];
-    const departments = await this.find({});
+    const filter = '-_id -__v';
+    const departments = await this.find({}, filter);
 
     return {
       success: true,
@@ -17,6 +18,16 @@ DepartmentSchema.statics = {
       total: departments.length,
       data: { departments }
     };
+  },
+
+  // todo: Complete Dept Update Implementation
+  updateDepartment: async function(deptName, department) {
+    await this.findOneAndUpdate({ deptName }, department);
+  },
+
+  createDepartment: async function(departments) {
+    const result = await this.create(departments);
+    return result;
   }
 };
 

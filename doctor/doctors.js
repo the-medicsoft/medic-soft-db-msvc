@@ -9,26 +9,16 @@ exports.getDoctors = async (req, res) => {
     let response = await Doctor.getDoctors();
 
     res.code(response.statusCode).send(response);
-  } catch (err) {}
+  } catch (err) { }
 };
 
-const getDoctorByQuery = async (req, res) => {
+async function getDoctorByQuery(req, res) {
   try {
     let response = await Doctor.getDoctorByQuery(req.query);
 
     res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
-
-exports.getDoctorByEmail = async (req, res) => {
-  try {
-    let response = await Doctor.getDoctorByEmail(req.params.email);
-
-    res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
-  }
-};
+  } catch (err) { }
+}
 
 exports.createDoctor = async (req, res) => {
   try {

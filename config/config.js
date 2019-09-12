@@ -2,6 +2,8 @@ module.exports = {
   HOST: process.env.HOST || '0.0.0.0',
   PORT: process.env.PORT || 4000,
   NODE_ENV: process.env.NODE_ENV || 'development',
+  LOGGER_LEVEL: process.env.LOGGER_LEVEL || 'info',
+  BASE_ROUTE: '/api',
   MONGO_DB: process.env.MONGO_DB || 'medic-soft-dev',
   MONGO_DB_URL:
     process.env.MONGO_DB_URL ||

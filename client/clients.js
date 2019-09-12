@@ -2,21 +2,23 @@ const { Client } = require('./client');
 
 exports.getClients = async (req, res) => {
   try {
+    if (req.query) {
+      return getClientByQuery(req, res);
+    }
+
     let response = await Client.getClients();
 
     res.code(response.statusCode).send(response);
-  } catch (err) {}
+  } catch (err) { }
 };
 
-exports.getClientByEmail = async (req, res) => {
+async function getClientByQuery(req, res) {
   try {
-    let response = await Client.getClientByEmail(req.params.email);
+    let response = await Client.getClientByQuery(req.query);
 
     res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
-  }
-};
+  } catch (err) { }
+}
 
 exports.createClient = async (req, res) => {
   try {
@@ -25,7 +27,7 @@ exports.createClient = async (req, res) => {
     let response = await Client.createClient(client);
 
     res.code(response.statusCode).send(response);
-  } catch (err) {}
+  } catch (err) { }
 };
 
 exports.updateClient = async (req, res) => {
@@ -33,7 +35,7 @@ exports.updateClient = async (req, res) => {
     let response = await Client.updateClient(req.params.email, req.body);
 
     res.code(response.statusCode).send(response);
-  } catch (err) {}
+  } catch (err) { }
 };
 
 exports.deleteClient = async (req, res) => {
@@ -41,5 +43,5 @@ exports.deleteClient = async (req, res) => {
     let response = await Client.deleteClient(req.params.email);
 
     res.code(response.statusCode).send(response);
-  } catch (err) {}
+  } catch (err) { }
 };

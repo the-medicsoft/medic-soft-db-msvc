@@ -27,16 +27,6 @@ doctorSchema.add({
   visitingTime: [{ branch: String, timings: Date }]
 });
 
-doctorSchema.statics.getIsDoctorAdminByEmail = async function(email) {
-  try {
-    let doctor = await this.findOne({ 'contacts.email': email }, 'isAdmin');
-
-    if (doctor.isAdmin) {
-      console.log(doctor);
-    }
-  } catch (err) {}
-};
-
 doctorSchema.statics.getDoctors = async function() {
   try {
     // remove _id, _v and password properties from resultset
@@ -61,42 +51,6 @@ doctorSchema.statics.getDoctors = async function() {
       statusCode: 404,
       statusText: 'Not Found',
       message: 'Not Found'
-    };
-  }
-};
-
-doctorSchema.statics.getDoctorByEmail = async function(email) {
-  try {
-    // remove _id and _v properties from resultset
-    const doctorResultFilter = '-_id -__v';
-
-    let doctor = await this.findOne(
-      { 'contacts.email': email },
-      doctorResultFilter
-    );
-
-    if (doctor)
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: 'doctor found!',
-        data: { doctor }
-      };
-    else if (!doctor)
-      return {
-        success: false,
-        statusCode: 404,
-        statusText: 'Not Found',
-        message: 'doctor Not found!'
-      };
-    else throw new Error();
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
     };
   }
 };

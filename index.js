@@ -10,23 +10,25 @@ if (isNodeEnvLower) {
   require('dotenv').config();
 }
 
-const HOST = config.HOST;
-const { PORT = config.PORT } = process.env;
+const { PORT, HOST } = config;
 
 const app = fastify({
   logger: {
-    level: 'info',
+    level: config.LOGGER_LEVEL,
     enabled: isNodeEnvLower,
     prettyPrint: isNodeEnvLower
   }
 });
+
+// hook registration
+require('./hooks/hooks')(app);
 
 // register API routes
 require('./routes/routesRegister')(app);
 
 app.register(require('fastify-cors'), {
   origin: '*',
-  methods: 'GET, PUT, POST, DELETE, OPTIONS'
+  methods: 'GET, PUT, PATCH, POST, DELETE, OPTIONS'
 });
 
 app.get('/', (req, res) => res.send('Welcome to The MedicSoft'));

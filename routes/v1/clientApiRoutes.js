@@ -10,8 +10,6 @@ const clientRequestBodySchema = {
 module.exports = function(fastify, opts, done) {
   fastify.get('/clients', clients.getClients);
 
-  fastify.get('/clients/:email', clients.getClientByEmail);
-
   fastify.post(
     '/clients',
     {
@@ -22,7 +20,7 @@ module.exports = function(fastify, opts, done) {
     clients.createClient
   );
 
-  fastify.put('/clients/:email', clients.updateClient);
+  fastify.patch('/clients/:email', clients.updateClient);
 
   fastify.delete('/clients/:email', clients.deleteClient);
   done();

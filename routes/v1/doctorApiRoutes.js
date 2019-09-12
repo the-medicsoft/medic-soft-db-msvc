@@ -37,18 +37,6 @@ doctorRequestBodySchema.properties.visitingTime = {
 module.exports = function(fastify, opts, done) {
   fastify.get('/doctors', doctors.getDoctors);
 
-  fastify.get(
-    '/doctors/:email',
-    {
-      schema: {
-        params: {
-          email: { type: 'string' }
-        }
-      }
-    },
-    doctors.getDoctorByEmail
-  );
-
   fastify.post(
     '/doctors',
     {
@@ -59,7 +47,7 @@ module.exports = function(fastify, opts, done) {
     doctors.createDoctor
   );
 
-  fastify.put(
+  fastify.patch(
     '/doctors/:email',
     {
       schema: {

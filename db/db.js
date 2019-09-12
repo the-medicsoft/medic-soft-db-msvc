@@ -13,7 +13,8 @@ async function connect(mongoDbURL) {
     const authData = {
       user: MONGO_USER,
       password: MONGO_PASSWORD,
-      useNewUrlParser: true
+      useNewUrlParser: true,
+      useUnifiedTopology: true
     };
 
     const client = await mongoose.connect(mongoDbURL, authData);
