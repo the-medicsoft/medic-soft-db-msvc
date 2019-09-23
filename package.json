@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "lint": "eslint **/*.js --ignore-path .gitignore .",
     "lintFix": "eslint --fix **/*.js --ignore-path .gitignore .",
-    "seed:run": "node seeders/seeder.js"
+    "seed:run": "node seeders/seeder.js run",
+    "seed:drop": "node seeders/seeder.js drop"
   },
   "contributors": [
     {
@@ -47,6 +48,7 @@
     "eslint-plugin-node": "^9.2.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
+    "faker": "^4.1.0",
     "prettier": "^1.18.2"
   },
   "mdSeed": {
