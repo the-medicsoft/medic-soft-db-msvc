@@ -21,6 +21,13 @@ exports.fakeClients = async (seedLimit = 1) => {
         state: faker.address.state(),
         country: faker.address.country()
       },
+      location: {
+        type: 'Point',
+        coordinates: [
+          faker.random.arrayElement(seedData.lngs), // longitutde comes first
+          faker.random.arrayElement(seedData.lats) // latitude
+        ]
+      },
       contacts: {
         phones: [faker.phone.phoneNumber(), faker.phone.phoneNumber()],
         email: faker.internet.email()
@@ -53,6 +60,13 @@ exports.fakeDoctors = async (seedLimit = 1) => {
     doctor.visitingTime = [
       { branch: faker.address.city(), timings: new Date().getTime() }
     ];
+    doctor.location = {
+      type: 'Point',
+      coordinates: [
+        faker.random.arrayElement(seedData.lngs), // longitutde comes first
+        faker.random.arrayElement(seedData.lats) // latitude
+      ]
+    };
   }
 
   return doctors;
