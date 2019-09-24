@@ -1,5 +1,7 @@
 const { mongoose } = require('../db');
 
+const locationSchema = require('./locationSchema');
+
 const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
@@ -13,6 +15,10 @@ const userSchema = new mongoose.Schema({
     zipCode: Number,
     state: String,
     country: String
+  },
+  location: {
+    type: locationSchema.pointSchema,
+    required: true
   },
   contacts: {
     phones: [

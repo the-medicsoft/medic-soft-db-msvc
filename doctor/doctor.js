@@ -60,7 +60,28 @@ doctorSchema.statics.getDoctorByQuery = async function(query) {
     // remove _id and _v properties from resultset
     const doctorResultFilter = '-_id -__v';
 
-    let doctors = await this.find(query, doctorResultFilter);
+    let doctors = undefined;
+
+    if (!('location' in query)) {
+      doctors = await this.find(query, doctorResultFilter);
+    } else {
+      const coordinates = query.location.split(',');
+
+      const geoQuery = {
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates
+            },
+            $minDistance: 1000,
+            $maxDistance: 5000
+          }
+        }
+      };
+
+      doctors = await this.find(geoQuery, doctorResultFilter);
+    }
 
     if (doctors.length) {
       return {
