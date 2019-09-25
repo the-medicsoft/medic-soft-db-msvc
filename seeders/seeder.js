@@ -16,7 +16,7 @@ const clientsSeeder = require('./clients.seed');
 })();
 
 async function run() {
-  const seedLimit = 20;
+  const seedLimit = 500;
 
   await departmentsSeeder();
   await doctorsSeeder.seedDoctors(seedLimit);

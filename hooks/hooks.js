@@ -7,7 +7,7 @@ module.exports = function(fastify) {
     const filter = '-firstName -lastName -location';
 
     for (let kQuery in query) {
-      if (typeof query[kQuery] === 'string' && queryParser(filter, kQuery)) {
+      if (queryParser(filter, kQuery)) {
         query[kQuery] = query[kQuery].toLowerCase();
       }
     }
