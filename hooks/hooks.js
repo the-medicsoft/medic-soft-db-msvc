@@ -4,7 +4,7 @@ module.exports = function(fastify) {
     const query = req.query;
 
     // filter: To ignore keys to be parsed to lowercase
-    const filter = '-firstName -lastName -location';
+    const filter = '-firstName -lastName -location -contacts.email';
 
     for (let kQuery in query) {
       if (queryParser(filter, kQuery)) {

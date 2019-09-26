@@ -1,14 +1,16 @@
 const fakerAPI = require('./fakerAPI');
 const { Client } = require('../client/client');
 
+const client = new Client();
+
 exports.seedClients = async (seedLimit = 1) => {
   try {
-    const count = await Client.countDocuments();
+    const count = await client.Model.countDocuments();
 
     if (count === 0) {
       const data = await fakerAPI.fakeClients(seedLimit);
 
-      await Client.create(data);
+      await client.Model.create(data);
 
       console.log('Clients Seed Complete!');
     } else {
@@ -21,9 +23,9 @@ exports.seedClients = async (seedLimit = 1) => {
 
 exports.dropClients = async () => {
   try {
-    const count = await Client.countDocuments();
+    const count = await client.Model.countDocuments();
 
-    await Client.deleteMany();
+    await client.Model.deleteMany();
 
     console.log(`Collection Clients: Total ${count} Removed!`);
   } catch (e) {

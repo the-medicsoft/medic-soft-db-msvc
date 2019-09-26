@@ -1,5 +1,8 @@
-const { mongoose } = require('../db/db');
+const { db, ResourceController } = require('../db');
 
+const { mongoose } = db;
+
+// TODO: Conver to class
 const AppointmentSchema = new mongoose.Schema({
   department: { type: String, required: true },
   creationDate: { type: Date, default: new Date() },

@@ -1,4 +1,6 @@
-const { mongoose } = require('../db/db');
+const { db, ResourceController } = require('../db');
+
+const { mongoose } = db;
 
 const DepartmentSchema = new mongoose.Schema({
   deptName: { type: String, required: true },
@@ -6,10 +8,15 @@ const DepartmentSchema = new mongoose.Schema({
   deptNo: { type: Number, required: true }
 });
 
-DepartmentSchema.statics = {
-  getDepartments: async function() {
-    const filter = '-_id -__v';
-    const departments = await this.find({}, filter);
+const departmentModel = mongoose.model('Department', DepartmentSchema);
+
+exports.Department = class Department extends ResourceController {
+  constructor() {
+    super(departmentModel);
+  }
+
+  async getDepartments() {
+    const departments = await super.read();
 
     return {
       success: true,
@@ -18,17 +25,16 @@ DepartmentSchema.statics = {
       total: departments.length,
       data: { departments }
     };
-  },
+  }
 
   // todo: Complete Dept Update Implementation
-  updateDepartment: async function(deptName, department) {
-    await this.findOneAndUpdate({ deptName }, department);
-  },
+  async updateDepartment(deptName, updateDepartment) {
+    const departmentDoc = await this.Model.findOne({ deptName });
+    await super.update(departmentDoc._id, updateDepartment);
+  }
 
-  createDepartment: async function(departments) {
-    const result = await this.create(departments);
+  async createDepartment(departments) {
+    const result = await super.create(departments);
     return result;
   }
 };
-
-exports.Department = mongoose.model('Department', DepartmentSchema);

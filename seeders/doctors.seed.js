@@ -1,14 +1,29 @@
 const fakerAPI = require('./fakerAPI');
 const { Doctor } = require('../doctor/doctor');
+const { Department } = require('../department');
+
+const doctor = new Doctor();
+const department = new Department();
 
 exports.seedDoctors = async (seedLimit = 1) => {
   try {
-    const count = await Doctor.countDocuments();
+    const count = await doctor.Model.countDocuments();
+    const departments = await department.Model.find();
 
     if (count === 0) {
-      const data = await fakerAPI.fakeDoctors(seedLimit);
+      const fakeDoctors = await fakerAPI.fakeDoctors(seedLimit);
 
-      await Doctor.create(data);
+      // assign department._id inplace of deptName
+      // otherwise Department will not populate as an object
+      for (let doctor of fakeDoctors) {
+        for (let department of departments) {
+          if (doctor.department === department.deptName) {
+            doctor.department = department._id;
+          }
+        }
+      }
+
+      await doctor.Model.create(fakeDoctors);
 
       console.log('Doctors Seed Complete!');
     } else {
@@ -21,9 +36,9 @@ exports.seedDoctors = async (seedLimit = 1) => {
 
 exports.dropDoctors = async () => {
   try {
-    const count = await Doctor.countDocuments();
+    const count = await doctor.Model.countDocuments();
 
-    await Doctor.deleteMany();
+    await doctor.Model.deleteMany();
 
     console.log(`Collection Doctors: Total ${count} Removed!`);
   } catch (e) {

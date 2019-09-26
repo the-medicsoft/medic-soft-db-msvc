@@ -9,5 +9,7 @@ module.exports = {
     process.env.MONGO_DB_URL ||
     'mongodb+srv://root:$themedicsoft2019@cluster0-medic-soft-dev-8ydey.mongodb.net/medic-soft-dev?retryWrites=true',
   MONGO_USER: process.env.MONGO_USER || 'root',
-  MONGO_PASSWORD: process.env.MONGO_PASSWORD || '$themedicsoft2019'
+  MONGO_PASSWORD: process.env.MONGO_PASSWORD || '$themedicsoft2019',
+  minDistance: process.env.minDistance || 1000,
+  maxDistance: process.env.maxDistance || 5000
 };

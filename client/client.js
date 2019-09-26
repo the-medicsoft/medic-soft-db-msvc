@@ -1,163 +1,165 @@
-const { mongoose } = require('../db/db');
+const { db, ResourceController } = require('../db');
 const { userSchema } = require('../db/shared_schemas/');
+
+const { mongoose } = db;
 
 const clientSchema = new mongoose.Schema(userSchema);
 
-// schema functions
-clientSchema.statics.getClients = async function() {
-  try {
-    // remove _id and _v properties from resultset
-    const clientResultFilter = '-_id -__v -password';
+// todo: convert this to Singleton Design Pattern
+const clientModel = mongoose.model('Client', clientSchema);
 
-    let clients = await this.find({}, clientResultFilter);
-
-    return {
-      success: true,
-      statusCode: 200,
-      statusText: 'OK',
-      total: clients.length,
-      data: clients
-    };
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
+exports.Client = class Client extends ResourceController {
+  constructor() {
+    super(clientModel);
   }
-};
 
-clientSchema.statics.getClientByQuery = async function(query) {
-  try {
-    // remove _id and _v properties from resultset
-    const clientResultFilter = '-_id -__v';
+  async createClient(newClient) {
+    try {
+      // if client exists then do not insert and, prompt user with message
+      let { email } = newClient.contacts;
 
-    let clients = await this.find(query, clientResultFilter);
+      let clientExists = await this.Model.findOne({
+        'contacts.email': email
+      });
 
-    if (clients.length) {
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        total: clients.length,
-        data: clients
-      };
-    } else throw new Error();
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 404,
-      statusText: 'Not Found',
-      message: 'Not Found'
-    };
-  }
-};
+      if (clientExists && clientExists.contacts.email === email) {
+        return {
+          success: false,
+          statusCode: 409,
+          statusText: 'Conflict',
+          message: `client with email ${email} already exists!`
+        };
+      }
 
-clientSchema.statics.createClient = async function(newClient) {
-  try {
-    // if client exists then do not insert and, prompt user with message
-    let { email } = newClient.contacts;
+      let client = await super.create(newClient);
 
-    let clientExists = await this.findOne({ 'contacts.email': email });
-
-    if (clientExists && clientExists.contacts.email === email) {
+      if (client && client.contacts.email === email) {
+        return {
+          success: true,
+          statusCode: 200,
+          statusText: 'OK',
+          message: 'client inserted',
+          data: client
+        };
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
       return {
         success: false,
-        statusCode: 409,
-        statusText: 'Conflict',
-        message: `client with email ${email} already exists!`
+        statusCode: 500,
+        statusText: 'Internal Server Error',
+        message: err.message
       };
     }
+  }
 
-    let client = await this.create(newClient);
+  async getClients() {
+    try {
+      let response = await super.read();
 
-    if (client && client.contacts.email === email) {
       return {
         success: true,
         statusCode: 200,
         statusText: 'OK',
-        message: 'client inserted',
-        data: client
+        total: response.length,
+        data: response
       };
-    } else {
-      throw new Error();
-    }
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
-  }
-};
-
-clientSchema.statics.updateClient = async function(email, updateClientWith) {
-  try {
-    let client = await this.findOneAndUpdate(
-      { 'contacts.email': email },
-      updateClientWith,
-      { useFindAndModify: true }
-    );
-
-    if (client) {
+    } catch (err) {
       return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: 'client updated',
-        data: client
+        success: false,
+        statusCode: 500,
+        statusText: 'Internal Server Error',
+        message: err.message
       };
     }
-
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: 'client not updated'
-    };
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
   }
-};
 
-clientSchema.statics.deleteClient = async function(email) {
-  try {
-    let client = await this.findOneAndUpdate(
-      { 'contacts.email': email },
-      { isActive: false },
-      { useFindAndModify: true }
-    );
+  async getClientByQuery(query) {
+    try {
+      let response = await super.readByQuery(query);
 
-    if (client && client.isActive === false) {
+      if (response.length) {
+        return {
+          success: true,
+          statusCode: 200,
+          statusText: 'OK',
+          total: response.length,
+          data: response
+        };
+      } else throw new Error();
+    } catch (err) {
       return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: 'client deleted'
+        success: false,
+        statusCode: 404,
+        statusText: 'Not Found',
+        message: 'Not Found'
       };
     }
+  }
 
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: 'client not deleted'
-    };
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
+  async updateClient(email, updateClientWith) {
+    try {
+      const client = await this.Model.findOne({ 'contacts.email': email });
+
+      const response = await super.update(client._id, updateClientWith);
+
+      if (response) {
+        return {
+          success: true,
+          statusCode: 200,
+          statusText: 'OK',
+          message: 'client updated',
+          data: response
+        };
+      }
+
+      return {
+        success: false,
+        statusCode: 500,
+        statusText: 'Internal Server Error',
+        message: 'client not updated'
+      };
+    } catch (err) {
+      return {
+        success: false,
+        statusCode: 500,
+        statusText: 'Internal Server Error',
+        message: err.message
+      };
+    }
+  }
+
+  async deleteClient(email) {
+    try {
+      const setActiveToFalse = { isActive: false };
+
+      const client = await this.Model.findOne({ 'contacts.email': email });
+
+      const response = await super.delete(client._id, setActiveToFalse);
+
+      if (response && response.isActive === false) {
+        return {
+          success: true,
+          statusCode: 200,
+          statusText: 'OK',
+          message: 'client deleted'
+        };
+      }
+
+      return {
+        success: false,
+        statusCode: 500,
+        statusText: 'Internal Server Error',
+        message: 'client not deleted'
+      };
+    } catch (err) {
+      return {
+        success: false,
+        statusCode: 500,
+        statusText: 'Internal Server Error',
+        message: err.message
+      };
+    }
   }
 };
-
-exports.Client = mongoose.model('Client', clientSchema);
