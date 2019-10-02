@@ -1,6 +1,6 @@
-const { BASE_ROUTE } = require('../../config/config');
+const { BASE_API_ROUTE } = require('../../config/config');
 
-const registerOpts = { prefix: `${BASE_ROUTE}/v1` };
+const registerOpts = { prefix: `${BASE_API_ROUTE}/v1` };
 
 module.exports = function(app) {
   app.register(require('./clientApiRoutes'), registerOpts);

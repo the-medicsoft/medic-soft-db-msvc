@@ -1,15 +1,24 @@
+const { cmdLineParser } = require('../utils/utils');
+
+const isNodeEnvLower = process.env.NODE_ENV !== 'production';
+
+if (isNodeEnvLower) {
+  require('dotenv').config();
+}
+
+const configObj = cmdLineParser(process.argv);
+
 module.exports = {
-  HOST: process.env.HOST || '0.0.0.0',
-  PORT: process.env.PORT || 4000,
-  NODE_ENV: process.env.NODE_ENV || 'development',
-  LOGGER_LEVEL: process.env.LOGGER_LEVEL || 'info',
-  BASE_ROUTE: '/api',
-  MONGO_DB: process.env.MONGO_DB || 'medic-soft-dev',
-  MONGO_DB_URL:
-    process.env.MONGO_DB_URL ||
-    'mongodb+srv://root:$themedicsoft2019@cluster0-medic-soft-dev-8ydey.mongodb.net/medic-soft-dev?retryWrites=true',
-  MONGO_USER: process.env.MONGO_USER || 'root',
-  MONGO_PASSWORD: process.env.MONGO_PASSWORD || '$themedicsoft2019',
-  minDistance: process.env.minDistance || 1000,
-  maxDistance: process.env.maxDistance || 5000
+  HOST: process.env.HOST || configObj.HOST || '0.0.0.0',
+  PORT: process.env.PORT || configObj.PORT || 4000,
+  NODE_ENV: process.env.NODE_ENV || configObj.NODE_ENV || 'development',
+  LOGGER_LEVEL: process.env.LOGGER_LEVEL || configObj.LOGGER_LEVEL || 'info',
+  BASE_API_ROUTE: process.env.BASE_API_ROUTE || configObj.BASE_API_ROUTE || '/api',
+  MONGO_DB: process.env.MONGO_DB || configObj.MONGO_DB,
+  MONGO_DB_URL: process.env.MONGO_DB_URL || configObj.MONGO_DB_URL,
+  MONGO_USER: process.env.MONGO_USER || configObj.MONGO_USER,
+  MONGO_PASSWORD: process.env.MONGO_PASSWORD || configObj.MONGO_PASSWORD,
+  minDistance: process.env.minDistance || configObj.minDistance || 1000,
+  maxDistance: process.env.maxDistance || configObj.maxDistance || 5000,
+  isNodeEnvLower
 };
