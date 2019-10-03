@@ -3,7 +3,7 @@ const doctorsSeeder = require('./doctors.seed');
 const clientsSeeder = require('./clients.seed');
 
 (async function seeder() {
-  const option = process.argv[2];
+  const option = process.env.SEED_OPTION;
 
   switch (option) {
     case 'run':
