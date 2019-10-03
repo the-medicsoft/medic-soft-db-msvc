@@ -49,9 +49,9 @@ exports.fakeDoctors = async (seedLimit = 1) => {
     doctor.DOJ = faker.date.recent();
     doctor.isDoctor = faker.random.arrayElement(seedData.isDoctorOrAdmin);
     doctor.isAdmin = faker.random.arrayElement(seedData.isDoctorOrAdmin);
-    doctor.department = faker.random.arrayElement(
-      seedData.departments
-    ).deptName;
+    doctor.department = faker.random
+      .arrayElement(seedData.departments)
+      .deptName.toLowerCase();
     doctor.designation = faker.random.arrayElement(seedData.designations);
     doctor.specialisations = [
       faker.random.arrayElement(seedData.specialisations),

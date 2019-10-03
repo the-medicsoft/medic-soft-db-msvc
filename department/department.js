@@ -3,7 +3,7 @@ const { db, ResourceController } = require('../db');
 const { mongoose } = db;
 
 const DepartmentSchema = new mongoose.Schema({
-  deptName: { type: String, required: true },
+  deptName: { type: String, lowercase: true, required: true },
   description: { type: String },
   deptNo: { type: Number, required: true }
 });

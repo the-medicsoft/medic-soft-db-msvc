@@ -8,8 +8,8 @@
     "start:dev": "nodemon index.js",
     "lint": "eslint **/*.js --ignore-path .gitignore .",
     "lintFix": "eslint --fix **/*.js --ignore-path .gitignore .",
-    "seed:run": "node seeders/seeder.js run",
-    "seed:drop": "node seeders/seeder.js drop"
+    "seed:run": "cross-env SEED_OPTION=run node seeders/seeder.js",
+    "seed:drop": "cross-env SEED_OPTION=drop node seeders/seeder.js"
   },
   "contributors": [
     {
@@ -39,6 +39,7 @@
     "pino-pretty": "^3.2.1"
   },
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-node": "^4.0.0",
