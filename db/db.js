@@ -14,7 +14,8 @@ async function connect(mongoDbURL) {
       user: MONGO_USER,
       password: MONGO_PASSWORD,
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useFindAndModify: false
     };
 
     const client = await mongoose.connect(mongoDbURL, authData);

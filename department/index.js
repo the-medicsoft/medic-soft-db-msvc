@@ -1,7 +1,7 @@
 const { Department } = require('./department');
-const departments = require('./departments');
+const { Departments } = require('./departments');
 
 module.exports = {
   Department,
-  departments
+  Departments
 };

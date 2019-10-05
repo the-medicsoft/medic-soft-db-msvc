@@ -1,4 +1,4 @@
-const { clients } = require('../../client');
+const { Clients } = require('../../client');
 const { userBaseSchema } = require('./routeschemas');
 
 const clientRequestBodySchema = {
@@ -8,6 +8,8 @@ const clientRequestBodySchema = {
 };
 
 module.exports = function(fastify, opts, done) {
+  const clients = new Clients();
+
   fastify.get('/clients', clients.getClients);
 
   fastify.post(

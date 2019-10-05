@@ -1,4 +1,4 @@
-const { doctors } = require('../../doctor');
+const { Doctors } = require('../../doctor');
 const { userBaseSchema } = require('./routeschemas');
 
 const doctorRequestBodySchema = {
@@ -35,6 +35,8 @@ doctorRequestBodySchema.properties.visitingTime = {
 };
 
 module.exports = function(fastify, opts, done) {
+  const doctors = new Doctors();
+
   fastify.get('/doctors', doctors.getDoctors);
 
   fastify.post(

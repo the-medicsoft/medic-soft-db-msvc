@@ -1,4 +1,5 @@
-const { db, ResourceController } = require('../db');
+const { db, BaseModel } = require('../db');
+const { HttpCode } = require('../utils');
 
 const { mongoose } = db;
 
@@ -10,7 +11,7 @@ const DepartmentSchema = new mongoose.Schema({
 
 const departmentModel = mongoose.model('Department', DepartmentSchema);
 
-exports.Department = class Department extends ResourceController {
+class Department extends BaseModel {
   constructor() {
     super(departmentModel);
   }
@@ -18,13 +19,14 @@ exports.Department = class Department extends ResourceController {
   async getDepartments() {
     const departments = await super.read();
 
-    return {
-      success: true,
-      statusCode: 200,
-      statusText: 'OK',
-      total: departments.length,
-      data: { departments }
-    };
+    return super.sendData(
+      true,
+      HttpCode[200].code,
+      HttpCode[200].statusText,
+      departments.length,
+      departments,
+      undefined
+    );
   }
 
   // todo: Complete Dept Update Implementation
@@ -37,4 +39,6 @@ exports.Department = class Department extends ResourceController {
     const result = await super.create(departments);
     return result;
   }
-};
+}
+
+exports.Department = Department;

@@ -1,7 +1,7 @@
 const db = require('./db');
-const { ResourceController } = require('./ResourceController');
+const { BaseModel } = require('./BaseModel');
 
 module.exports = {
   db,
-  ResourceController
+  BaseModel
 };
