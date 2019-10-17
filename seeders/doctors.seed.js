@@ -5,7 +5,7 @@ const { Department } = require('../department');
 const doctor = new Doctor();
 const department = new Department();
 
-exports.seedDoctors = async (seedLimit = 1) => {
+exports.seed = async (seedLimit = 1) => {
   try {
     const count = await doctor.Model.countDocuments();
     const departments = await department.Model.find();
@@ -34,7 +34,7 @@ exports.seedDoctors = async (seedLimit = 1) => {
   }
 };
 
-exports.dropDoctors = async () => {
+exports.drop = async () => {
   try {
     const count = await doctor.Model.countDocuments();
 

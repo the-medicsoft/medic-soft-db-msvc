@@ -1,85 +1,81 @@
-const { db, ResourceController } = require('../db');
+const { db, BaseModel } = require('../db');
 
-const { mongoose } = db;
+const { Schema, model } = db.mongoose;
 
-// TODO: Conver to class
-const AppointmentSchema = new mongoose.Schema({
-  department: { type: String, required: true },
-  creationDate: { type: Date, default: new Date() },
-  appointmentDate: Date,
-  // TODO: Separate Appointment Status
-  appointmentStatus: {
-    type: mongoose.Schema.Types.ObjectId,
+const AppointmentSchema = new Schema({
+  creationDate: {
+    type: Date,
+    default: new Date()
+  },
+  appointmentDate: {
+    type: Date
+  },
+  department: {
+    type: Schema.Types.ObjectId,
+    ref: 'Department',
+    required: true
+  },
+  appointmentStatusCode: {
+    type: Schema.Types.ObjectId,
     ref: 'AppointmentStatus',
-    default: 'P'
+    required: true
   },
   client: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Client'
+    type: Schema.Types.ObjectId,
+    ref: 'Client',
+    required: true
   },
   doctor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Doctor'
+    type: Schema.Types.ObjectId,
+    ref: 'Doctor',
+    required: true
   }
 });
 
-AppointmentSchema.statics.createAppointment = async function(appointment) {
-  try {
-    let result = await this.create(appointment);
+class Appointment extends BaseModel {
+  constructor() {
+    super(model('Appointment', AppointmentSchema));
+  }
+
+  async createAppointment(appointment) {
+    let result = await super.create(appointment);
 
     if (result) {
-      return {
-        success: true,
-        message: 'appointment created',
-        appointment: result
-      };
+      return super.success(undefined, undefined, result);
     }
-  } catch (e) {
-    return {
-      success: false,
-      message: 'appointment not created',
-      err: e.message
-    };
+    else {
+      super.fail('appointment not created');
+    }
   }
-};
 
-AppointmentSchema.statics.getAppointments = async function() {
-  try {
-    let result = await this.find({}, '-_id -__v')
-      .populate({
-        path: 'client',
-        select: 'address contacts firstName lastName -_id'
-      })
-      .populate({
-        path: 'doctor',
-        select:
-          'address contacts qualifications specialisations department firstName lastName designation -_id'
-      })
-      .populate({
-        path: 'appointmentStatus',
-        select: '-_id'
-      });
+  async getAppointments() {
+    let appointments = await super.read();
 
-    if (result.length > 0) {
-      return {
-        success: true,
-        total: result.length,
-        data: result
-      };
+    await this.Model.populate(appointments, {
+      path: 'department'
+    });
+
+    await this.Model.populate(appointments, {
+      path: 'client'
+    });
+
+    await this.Model.populate(appointments, {
+      path: 'doctor'
+    });
+
+    // TODO Throwing Error: Schema not registered
+    /* await this.Model.populate(appointments, {
+      path: 'appointmentStatusCode'
+    }); */
+
+    if (appointments.length) {
+      return super.success(appointments.length, appointments);
+    } else if (appointments.length === 0) {
+      super.notFound('No Appointments Found!');
     } else {
-      return {
-        success: true,
-        total: result.length,
-        message: 'no appointments found!'
-      };
+      super.fail('failed to get all appointment');
     }
-  } catch (e) {
-    return {
-      success: false,
-      message: 'failed to get all appointment',
-      err: e.message
-    };
   }
-};
+}
 
-exports.Appointment = mongoose.model('Appointment', AppointmentSchema);
+exports.Appointment = Appointment;

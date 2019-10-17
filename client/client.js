@@ -5,11 +5,9 @@ const { mongoose } = db;
 
 const clientSchema = new mongoose.Schema(userSchema);
 
-const clientModel = mongoose.model('Client', clientSchema);
-
 class Client extends BaseModel {
   constructor() {
-    super(clientModel);
+    super(mongoose.model('Client', clientSchema));
   }
 
   async createClient(newClient) {

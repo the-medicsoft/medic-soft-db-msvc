@@ -1,13 +1,29 @@
+const { BaseController } = require('../controllers/BaseController');
 const { Appointment } = require('./appointment');
 
-exports.createAppointment = async (req, res) => {
-  let result = await Appointment.createAppointment(req.body);
+const appointment = new Appointment();
 
-  res.send(result);
-};
+class Appointments extends BaseController {
+  async createAppointment(req, res) {
+    try {
+      let result = await appointment.createAppointment(req.body);
 
-exports.getAppointments = async (req, res) => {
-  let result = await Appointment.getAppointments();
+      super.sendResponse(req, res, result);
+    }
+    catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
+  }
 
-  res.send(result);
-};
+  async getAppointments(req, res) {
+    try {
+      let result = await appointment.getAppointments();
+
+      super.sendResponse(req, res, result);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
+  }
+}
+
+exports.Appointments = Appointments;

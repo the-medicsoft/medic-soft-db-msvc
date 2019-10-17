@@ -1,32 +1,21 @@
-const { mongoose } = require('../db/db');
+const { db, BaseModel } = require('../db');
+const { Schema, model } = db.mongoose;
 
-// TODO
-/**
- * P  = Pending
- * A  = Approved
- * D  = Declined
- * CR = Change Request
- *  */
-const AppointmentStatusSchema = new mongoose.Schema({
-  P: {
+const AppointmentStatusSchema = new Schema({
+  appointmentStatusCode: {
     type: String,
-    enum: ['Pending']
+    required: true
   },
-  A: {
+  descr: {
     type: String,
-    enum: ['Approved']
-  },
-  D: {
-    type: String,
-    enum: ['Declined']
-  },
-  CR: {
-    type: String,
-    enum: ['Change Request']
+    required: true
   }
 });
 
-exports.AppointmentStatus = new mongoose.model(
-  'AppointmentStatus',
-  AppointmentStatusSchema
-);
+class AppointmentStatus extends BaseModel {
+  constructor() {
+    super(model('AppointmentStatus', AppointmentStatusSchema));
+  }
+}
+
+exports.AppointmentStatus = AppointmentStatus;

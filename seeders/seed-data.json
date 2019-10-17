@@ -1,6 +1,12 @@
 {
-  "genders": ["M", "F"],
-  "isDoctorOrAdmin": [true, false],
+  "genders": [
+    "M",
+    "F"
+  ],
+  "isDoctorOrAdmin": [
+    true,
+    false
+  ],
   "password": "passw@rd",
   "passwordHash": "$2a$10$O9CyYQ6xChqIXV32NGqApeZUgLAsNvtcwH5S.785KuGf/83Ra7AzO",
   "departments": [
@@ -286,5 +292,23 @@
     77.293666,
     77.29374829999999,
     77.2090212
+  ],
+  "appointmentsStatus": [
+    {
+      "appointmentStatusCode": "P",
+      "descr": "Pending"
+    },
+    {
+      "appointmentStatusCode": "A",
+      "descr": "Approved"
+    },
+    {
+      "appointmentStatusCode": "D",
+      "descr": "Declined"
+    },
+    {
+      "appointmentStatusCode": "CR",
+      "descr": "Change Request"
+    }
   ]
 }

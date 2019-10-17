@@ -3,7 +3,7 @@ const { Client } = require('../client/client');
 
 const client = new Client();
 
-exports.seedClients = async (seedLimit = 1) => {
+exports.seed = async (seedLimit = 1) => {
   try {
     const count = await client.Model.countDocuments();
 
@@ -21,7 +21,7 @@ exports.seedClients = async (seedLimit = 1) => {
   }
 };
 
-exports.dropClients = async () => {
+exports.drop = async () => {
   try {
     const count = await client.Model.countDocuments();
 

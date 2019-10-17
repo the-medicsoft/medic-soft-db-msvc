@@ -9,7 +9,7 @@ const { departments } = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'seed-data.json'), 'utf-8')
 );
 
-exports.seedDepartments = async function() {
+exports.seed = async () => {
   try {
     const count = await department.Model.countDocuments();
 
@@ -24,7 +24,7 @@ exports.seedDepartments = async function() {
   }
 };
 
-exports.dropDepartments = async () => {
+exports.drop = async () => {
   try {
     const count = await department.Model.countDocuments();
 

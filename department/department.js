@@ -9,11 +9,9 @@ const DepartmentSchema = new mongoose.Schema({
   deptNo: { type: Number, required: true }
 });
 
-const departmentModel = mongoose.model('Department', DepartmentSchema);
-
 class Department extends BaseModel {
   constructor() {
-    super(departmentModel);
+    super(mongoose.model('Department', DepartmentSchema));
   }
 
   async getDepartments() {

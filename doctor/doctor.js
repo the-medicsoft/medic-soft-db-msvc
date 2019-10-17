@@ -30,10 +30,9 @@ doctorSchema.add({
   visitingTime: [{ branch: String, timings: Date }]
 });
 
-const doctorModel = mongoose.model('Doctor', doctorSchema);
 class Doctor extends BaseModel {
   constructor() {
-    super(doctorModel);
+    super(mongoose.model('Doctor', doctorSchema));
   }
 
   async getDoctors() {
