@@ -2,7 +2,7 @@ const { db, BaseModel } = require('../db');
 const { Schema, model } = db.mongoose;
 
 const AppointmentStatusSchema = new Schema({
-  appointmentStatusCode: {
+  code: {
     type: String,
     required: true
   },

@@ -1,4 +1,4 @@
-const { Appointments } = require('../../appointment');
+const { Appointments, AppointmentStatus } = require('../../appointment');
 const { userBaseSchema } = require('./routeschemas');
 
 const appointmentRouteSchema = {
@@ -9,6 +9,7 @@ const appointmentRouteSchema = {
 
 module.exports = function(fastify, opts, next) {
   const appointments = new Appointments();
+  const appointmentStatus = new AppointmentStatus();
   
   fastify.post(
     '/appointments',

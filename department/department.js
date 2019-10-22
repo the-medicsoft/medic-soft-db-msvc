@@ -17,10 +17,7 @@ class Department extends BaseModel {
   async getDepartments() {
     const departments = await super.read();
 
-    return super.sendData(
-      true,
-      HttpCode[200].code,
-      HttpCode[200].statusText,
+    return super.success(
       departments.length,
       departments,
       undefined

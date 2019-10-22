@@ -22,19 +22,19 @@ const appointmentStatusSeeder = require('./appointmentStatus.seed');
 async function run() {
   const seedLimit = 50;
 
+  await appointmentStatusSeeder.seed();
   await departmentsSeeder.seed();
   await doctorsSeeder.seed(seedLimit);
   await clientsSeeder.seed(seedLimit);
-  await appointmentStatusSeeder.seed();
 
   process.exit(0);
 }
 
 async function drop() {
+  await appointmentStatusSeeder.drop();
   await departmentsSeeder.drop();
   await clientsSeeder.drop();
   await doctorsSeeder.drop();
-  await appointmentStatusSeeder.drop();
 
   process.exit(0);
 }

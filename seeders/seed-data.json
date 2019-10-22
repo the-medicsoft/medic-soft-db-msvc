@@ -295,19 +295,19 @@
   ],
   "appointmentsStatus": [
     {
-      "appointmentStatusCode": "P",
+      "code": "P",
       "descr": "Pending"
     },
     {
-      "appointmentStatusCode": "A",
+      "code": "A",
       "descr": "Approved"
     },
     {
-      "appointmentStatusCode": "D",
+      "code": "D",
       "descr": "Declined"
     },
     {
-      "appointmentStatusCode": "CR",
+      "code": "CR",
       "descr": "Change Request"
     }
   ]

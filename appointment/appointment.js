@@ -1,5 +1,4 @@
 const { db, BaseModel } = require('../db');
-
 const { Schema, model } = db.mongoose;
 
 const AppointmentSchema = new Schema({
@@ -63,10 +62,9 @@ class Appointment extends BaseModel {
       path: 'doctor'
     });
 
-    // TODO Throwing Error: Schema not registered
-    /* await this.Model.populate(appointments, {
+    await this.Model.populate(appointments, {
       path: 'appointmentStatusCode'
-    }); */
+    });
 
     if (appointments.length) {
       return super.success(appointments.length, appointments);
