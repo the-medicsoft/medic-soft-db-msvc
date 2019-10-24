@@ -2,38 +2,25 @@ const fastify = require('fastify');
 
 const config = require('./config/config');
 
-const { NODE_ENV = config.NODE_ENV } = process.env;
-
-const isNodeEnvLower = NODE_ENV !== 'production';
-
-if (isNodeEnvLower) {
-  require('dotenv').config();
-}
-
-const { HOST = config.HOST, PORT = config.PORT } = process.env;
+const { PORT, HOST, LOGGER_LEVEL, isNodeEnvLower } = config;
 
 const app = fastify({
   logger: {
-    level: 'info',
+    level: LOGGER_LEVEL,
     enabled: isNodeEnvLower,
     prettyPrint: isNodeEnvLower
   }
 });
 
-// register v1 API routes
-require('./routes/v1/')(app);
+// hook registration
+require('./hooks/hooks')(app);
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'origin, token, x-origin, auth'
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, GET, POST, PUT, DELETE'
-  );
-  next();
+// register API routes
+require('./routes/routesRegister')(app);
+
+app.register(require('fastify-cors'), {
+  origin: '*',
+  methods: 'GET, PATCH, POST, DELETE, OPTIONS'
 });
 
 app.get('/', (req, res) => res.send('Welcome to The MedicSoft'));

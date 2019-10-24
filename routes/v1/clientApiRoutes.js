@@ -1,4 +1,4 @@
-const { clients } = require('../../client');
+const { Clients } = require('../../client');
 const { userBaseSchema } = require('./routeschemas');
 
 const clientRequestBodySchema = {
@@ -7,33 +7,23 @@ const clientRequestBodySchema = {
   properties: userBaseSchema.properties
 };
 
-exports.clientApiRoutes = [
-  {
-    method: 'GET',
-    url: '/api/v1/clients',
-    handler: clients.getClients
-  },
-  {
-    method: 'GET',
-    url: '/api/v1/clients/:email',
-    handler: clients.getClientByEmail
-  },
-  {
-    method: 'POST',
-    url: '/api/v1/clients',
-    schema: {
-      body: clientRequestBodySchema
+module.exports = function(fastify, opts, done) {
+  const clients = new Clients();
+
+  fastify.get('/clients', clients.getClients);
+
+  fastify.post(
+    '/clients',
+    {
+      schema: {
+        body: clientRequestBodySchema
+      }
     },
-    handler: clients.createClient
-  },
-  {
-    method: 'PUT',
-    url: '/api/v1/clients/:email',
-    handler: clients.updateClient
-  },
-  {
-    method: 'DELETE',
-    url: '/api/v1/clients/:email',
-    handler: clients.deleteClient
-  }
-];
+    clients.createClient
+  );
+
+  fastify.patch('/clients/:email', clients.updateClient);
+
+  fastify.delete('/clients/:email', clients.deleteClient);
+  done();
+};

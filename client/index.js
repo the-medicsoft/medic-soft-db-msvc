@@ -1,3 +1,3 @@
-const clients = require('./clients');
+const { Clients } = require('./clients');
 
-exports.clients = clients;
+exports.Clients = Clients;

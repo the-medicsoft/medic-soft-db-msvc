@@ -1,5 +1,8 @@
-const { mongoose } = require('../db/db');
+const { db, BaseModel } = require('../db');
 const { userSchema } = require('../db/shared_schemas/');
+const { minDistance, maxDistance } = require('../config/config');
+
+const { mongoose } = db;
 
 const doctorSchema = new mongoose.Schema(userSchema);
 
@@ -20,205 +23,119 @@ doctorSchema.add({
     }
   ],
   designation: { type: String, required: true },
-  department: { type: String },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department'
+  },
   visitingTime: [{ branch: String, timings: Date }]
 });
 
-doctorSchema.statics.getIsDoctorAdminByEmail = async function(email) {
-  try {
-    let doctor = await this.findOne({ 'contacts.email': email }, 'isAdmin');
+class Doctor extends BaseModel {
+  constructor() {
+    super(mongoose.model('Doctor', doctorSchema));
+  }
 
-    if (doctor.isAdmin) {
-      console.log(doctor);
+  async getDoctors() {
+    let doctors = await super.read();
+
+    await this.Model.populate(doctors, {
+      path: 'department'
+    });
+
+    if (doctors.length) {
+      return super.success(doctors.length, doctors, undefined);
+    } else {
+      super.fail();
     }
-  } catch (err) {}
-};
+  }
 
-doctorSchema.statics.getDoctors = async function() {
-  try {
-    // remove _id, _v and password properties from resultset
-    const doctorResultFilter = '-_id -__v -password';
+  async getDoctorByQuery(query) {
+    let doctors = undefined;
 
-    let doctors = await this.find({}, doctorResultFilter);
+    if (!('location' in query)) {
+      doctors = await super.readByQuery(query);
+    } else {
+      const coordinates = query.location.split(',');
+
+      const geoQuery = {
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates
+            },
+            $minDistance: minDistance,
+            $maxDistance: maxDistance
+          }
+        }
+      };
+
+      doctors = await super.readByQuery(geoQuery);
+    }
+
+    await this.Model.populate(doctors, {
+      path: 'department'
+    });
 
     if (doctors.length) {
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        total: doctors.length,
-        data: doctors
-      };
-    } else throw new Error();
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 404,
-      statusText: 'Not Found',
-      message: 'Not Found'
-    };
+      return super.success(doctors.length, doctors, undefined);
+    } else {
+      super.notFound();
+    }
   }
-};
 
-doctorSchema.statics.getDoctorByEmail = async function(email) {
-  try {
-    // remove _id and _v properties from resultset
-    const doctorResultFilter = '-_id -__v';
-
-    let doctor = await this.findOne(
-      { 'contacts.email': email },
-      doctorResultFilter
-    );
-
-    if (doctor)
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: 'doctor found!',
-        data: { doctor }
-      };
-    else if (!doctor)
-      return {
-        success: false,
-        statusCode: 404,
-        statusText: 'Not Found',
-        message: 'doctor Not found!'
-      };
-    else throw new Error();
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
-  }
-};
-
-doctorSchema.statics.getDoctorByQuery = async function(query) {
-  try {
-    // remove _id and _v properties from resultset
-    const doctorResultFilter = '-_id -__v';
-
-    let doctors = await this.find(query, doctorResultFilter);
-
-    if (doctors.length) {
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        total: doctors.length,
-        data: doctors
-      };
-    } else throw new Error();
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 404,
-      statusText: 'Not Found',
-      message: 'Not Found'
-    };
-  }
-};
-
-doctorSchema.statics.createDoctor = async function(newDoctor) {
-  try {
+  async createDoctor(newDoctor) {
     // if doctor exists then do not insert and, prompt user with message
     let { email } = newDoctor.contacts;
 
-    let doctorExists = await this.findOne({ 'contacts.email': email });
+    let doctorExists = await this.Model.findOne({ 'contacts.email': email });
 
     if (doctorExists && doctorExists.contacts.email === email) {
-      return {
-        success: false,
-        statusCode: 409,
-        statusText: 'Conflict',
-        message: `doctor with email ${email} already exists!`
-      };
+      super.conflict(`Doctor with email ${email} already exists!`);
     }
 
-    let doctor = await this.create(newDoctor);
+    let doctor = await super.create(newDoctor);
 
     if (doctor && doctor.contacts.email === email) {
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: `doctor inserted`,
-        data: doctor
-      };
+      return super.success(undefined, doctor, `Doctor Inserted`);
     } else {
-      throw new Error();
+      super.fail();
     }
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
   }
-};
 
-doctorSchema.statics.updateDoctorByEmail = async function(
-  email,
-  updateDoctorWith
-) {
-  try {
-    let doctor = await this.findOneAndUpdate(
-      { 'contacts.email': email },
-      updateDoctorWith,
-      { useFindAndModify: true }
-    );
+  async updateDoctorByEmail(email, updateDoctorWith) {
+    let doctor = await this.Model.findOne({ 'contacts.email': email });
 
-    if (doctor) {
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: `doctor updated`,
-        data: doctor
-      };
+    if (doctor && doctor.contacts.email === email) {
+      let result = await super.update(doctor._id, updateDoctorWith);
+
+      if (result) {
+        return super.success(undefined, result, 'Doctor Updated');
+      } else {
+        super.fail('Doctor not updated!');
+      }
     } else {
-      throw new Error();
+      super.notFound(`Doctor with email ${email} not found!`);
     }
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
   }
-};
 
-doctorSchema.statics.deleteDoctorByEmail = async function(email) {
-  try {
-    let doctor = await this.findOneAndUpdate(
-      { 'contacts.email': email },
-      { isActive: false },
-      { useFindAndModify: true }
-    );
+  async deleteDoctorByEmail(email) {
+    const setActiveToFalse = { isActive: false };
 
-    if (doctor && doctor.isActive === false) {
-      return {
-        success: true,
-        statusCode: 200,
-        statusText: 'OK',
-        message: 'doctor deleted'
-      };
+    let doctor = await this.Model.findOne({ 'contacts.email': email });
+
+    if (doctor && doctor.contacts.email === email) {
+      let result = await super.delete(doctor._id, setActiveToFalse);
+
+      if (result && result.isActive === false) {
+        return super.success(undefined, undefined, 'Doctor Deleted');
+      } else {
+        super.fail('Doctor not deleted!');
+      }
     } else {
-      throw new Error();
+      super.notFound(`Doctor with email ${email} not found!`);
     }
-  } catch (err) {
-    return {
-      success: false,
-      statusCode: 500,
-      statusText: 'Internal Server Error',
-      message: err.message
-    };
   }
-};
+}
 
-exports.Doctor = mongoose.model('Doctor', doctorSchema);
+exports.Doctor = Doctor;

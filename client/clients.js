@@ -1,45 +1,59 @@
+const { BaseController } = require('../controllers/BaseController');
 const { Client } = require('./client');
 
-exports.getClients = async (req, res) => {
-  try {
-    let response = await Client.getClients();
+const client = new Client();
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
+class Clients extends BaseController {
+  async getClients(req, res) {
+    try {
+      let response = undefined;
 
-exports.getClientByEmail = async (req, res) => {
-  try {
-    let response = await Client.getClientByEmail(req.params.email);
+      if (Object.keys(req.query).length) {
+        response = await getClientByQuery(req);
+        return super.sendResponse(req, res, response);
+      }
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
+      response = await client.getClients();
+
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
   }
-};
 
-exports.createClient = async (req, res) => {
-  try {
-    const client = new Client(req.body);
+  async createClient(req, res) {
+    try {
+      let response = await client.createClient(req.body);
 
-    let response = await Client.createClient(client);
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
+  }
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
+  async updateClient(req, res) {
+    try {
+      let response = await client.updateClient(req.params.email, req.body);
 
-exports.updateClient = async (req, res) => {
-  try {
-    let response = await Client.updateClient(req.params.email, req.body);
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
+  }
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
+  async deleteClient(req, res) {
+    try {
+      let response = await client.deleteClient(req.params.email);
 
-exports.deleteClient = async (req, res) => {
-  try {
-    let response = await Client.deleteClient(req.params.email);
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
+  }
+}
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
+async function getClientByQuery(req) {
+  return await client.getClientByQuery(req.query);
+}
+
+exports.Clients = Clients;

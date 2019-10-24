@@ -1,3 +1,3 @@
-const doctors = require('./doctors');
+const { Doctors } = require('./doctors');
 
-exports.doctors = doctors;
+exports.Doctors = Doctors;

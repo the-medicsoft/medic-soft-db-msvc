@@ -1,63 +1,62 @@
+const { BaseController } = require('../controllers/BaseController');
 const { Doctor } = require('./doctor');
 
-exports.getDoctors = async (req, res) => {
-  try {
-    if (req.query) {
-      return getDoctorByQuery(req, res);
+const doctor = new Doctor();
+
+class Doctors extends BaseController {
+  async getDoctors(req, res) {
+    try {
+      let response = undefined;
+
+      if (Object.keys(req.query).length) {
+        response = await getDoctorByQuery(req);
+        return super.sendResponse(req, res, response);
+      }
+
+      response = await doctor.getDoctors();
+
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
     }
-
-    let response = await Doctor.getDoctors();
-
-    res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
-
-const getDoctorByQuery = async (req, res) => {
-  try {
-    let response = await Doctor.getDoctorByQuery(req.query);
-
-    res.code(response.statusCode).send(response);
-  } catch (err) {}
-};
-
-exports.getDoctorByEmail = async (req, res) => {
-  try {
-    let response = await Doctor.getDoctorByEmail(req.params.email);
-
-    res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
   }
-};
 
-exports.createDoctor = async (req, res) => {
-  try {
-    let doctor = new Doctor(req.body);
+  async createDoctor(req, res) {
+    try {
+      let response = await doctor.createDoctor(req.body);
 
-    let response = await Doctor.createDoctor(doctor);
-
-    res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
   }
-};
 
-exports.updateDoctor = async (req, res) => {
-  try {
-    let response = await Doctor.updateDoctorByEmail(req.params.email, req.body);
+  async updateDoctor(req, res) {
+    try {
+      let response = await doctor.updateDoctorByEmail(
+        req.params.email,
+        req.body
+      );
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
   }
-};
 
-exports.deleteDoctor = async (req, res) => {
-  try {
-    let response = await Doctor.deleteDoctorByEmail(req.params.email);
+  async deleteDoctor(req, res) {
+    try {
+      let response = await doctor.deleteDoctorByEmail(req.params.email);
 
-    res.code(response.statusCode).send(response);
-  } catch (err) {
-    res.code(err.statusCode).send(err);
+      super.sendResponse(req, res, response);
+    } catch (err) {
+      super.sendErrorResponse(req, res, err);
+    }
   }
-};
+}
+
+async function getDoctorByQuery(req) {
+  return await doctor.getDoctorByQuery(req.query);
+}
+
+exports.Doctors = Doctors;
