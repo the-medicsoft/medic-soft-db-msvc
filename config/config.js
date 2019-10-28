@@ -21,5 +21,13 @@ module.exports = {
   MONGO_PASSWORD: process.env.MONGO_PASSWORD || configObj.MONGO_PASSWORD,
   minDistance: process.env.minDistance || configObj.minDistance || 1000,
   maxDistance: process.env.maxDistance || configObj.maxDistance || 5000,
-  isNodeEnvLower
+  isNodeEnvLower,
+  queryStringFilter:
+    process.env.queryStringFilter ||
+    configObj.queryStringFilter ||
+    '-firstName -lastName -location -contacts.email',
+  dbResultSetFilter:
+    process.env.dbResultSetFilter ||
+    configObj.dbResultSetFilter ||
+    '-_id -__v -password'
 };

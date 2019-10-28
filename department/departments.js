@@ -6,9 +6,9 @@ class Departments extends BaseController {
   async getDepartments(req, res) {
     try {
       const departments = await department.getDepartments();
-      super.sendResponse(req, res, departments);
+      super.sendResponse({ req, res, response: departments });
     } catch (err) {
-      super.sendErrorResponse(req, res, err);
+      super.sendErrorResponse({ req, res, errResponse: err });
     }
   }
 
@@ -16,7 +16,11 @@ class Departments extends BaseController {
     try {
       const { deptName } = req.params;
       const updateDept = req.body;
-      await department.updateDepartment(deptName, updateDept);
+
+      await department.updateDepartment({
+        deptName,
+        body: updateDept
+      });
 
       const response = {
         status: 200,
@@ -24,9 +28,9 @@ class Departments extends BaseController {
         message: 'Department Updated!'
       };
 
-      super.sendResponse(req, res, response);
+      super.sendResponse({ req, res, response });
     } catch (err) {
-      super.sendErrorResponse(req, res, err);
+      super.sendErrorResponse({ req, res, errResponse: err });
     }
   }
 }

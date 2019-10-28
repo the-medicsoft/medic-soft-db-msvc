@@ -1,13 +1,13 @@
-module.exports = function(fastify) {
+const { queryStringFilter } = require('../config/config');
+
+module.exports = fastify => {
   // Hook to convert query to lowercase
   fastify.addHook('onRequest', (req, res, done) => {
     const query = req.query;
 
-    // filter: To ignore keys to be parsed to lowercase
-    const filter = '-firstName -lastName -location -contacts.email';
-
+    // filter to ignore keys to be parsed to lowercase
     for (let kQuery in query) {
-      if (queryParser(filter, kQuery)) {
+      if (queryParser(queryStringFilter, kQuery)) {
         query[kQuery] = query[kQuery].toLowerCase();
       }
     }

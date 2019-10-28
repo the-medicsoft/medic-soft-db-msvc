@@ -1,3 +1,4 @@
+const { dbResultSetFilter } = require('../config/config');
 const { HttpCode } = require('../utils');
 
 class BaseModel {
@@ -5,10 +6,10 @@ class BaseModel {
     this.Model = model;
 
     // remove _id and _v properties from resultset
-    this.filter = '-_id -__v -password';
+    this.filter = dbResultSetFilter;
   }
 
-  async create(body) {
+  async create({ body }) {
     const resource = new this.Model(body);
     return await this.Model.create(resource);
   }
@@ -17,81 +18,81 @@ class BaseModel {
     return await this.Model.find({}, this.filter);
   }
 
-  async readByQuery(query) {
+  async readByQuery({ query }) {
     return await this.Model.find(query, this.filter);
   }
 
-  async update(id, updateDoc) {
+  async update({ id, body }) {
     const doc = await this.Model.findById(id);
 
-    return await this.Model.findOneAndUpdate({ _id: doc._id }, updateDoc);
+    return await this.Model.findOneAndUpdate({ _id: doc._id }, body);
   }
 
-  async delete(id, deleteDoc) {
+  async delete({ id, deleteDoc }) {
     const doc = await this.Model.findById(id);
 
     return await this.Model.findOneAndUpdate({ _id: doc._id }, deleteDoc);
   }
 
-  success(total, data, message) {
-    return DbResult(
-      true,
-      HttpCode[200].code,
-      HttpCode[200].statusText,
-      total,
-      data,
-      message
-    );
+  success({ total, data, message } = {}) {
+    return DbResult({
+      isSuccess: true,
+      statusCode: HttpCode[200].code,
+      statusText: HttpCode[200].statusText,
+      total: total,
+      data: data,
+      message: message
+    });
   }
 
-  created(total, data, message) {
-    return DbResult(
-      true,
-      HttpCode[201].code,
-      HttpCode[201].statusText,
-      total,
-      data,
-      message
-    );
+  created({ total, data, message } = {}) {
+    return DbResult({
+      isSuccess: true,
+      statusCode: HttpCode[201].code,
+      statusText: HttpCode[201].statusText,
+      total: total,
+      data: data,
+      message: message
+    });
   }
 
-  notFound(message) {
-    throw DbResult(
-      false,
-      HttpCode[404].code,
-      HttpCode[404].statusText,
-      undefined,
-      undefined,
-      message || HttpCode[404].statusText
-    );
+  notFound({ message } = {}) {
+    throw DbResult({
+      isSuccess: false,
+      statusCode: HttpCode[404].code,
+      statusText: HttpCode[404].statusText,
+      total: undefined,
+      data: undefined,
+      message: message || HttpCode[404].statusText
+    });
   }
 
-  conflict(message) {
-    throw DbResult(
-      false,
-      HttpCode[409].code,
-      HttpCode[409].statusText,
-      undefined,
-      undefined,
-      message
-    );
+  conflict({ message } = {}) {
+    throw DbResult({
+      isSuccess: false,
+      statusCode: HttpCode[409].code,
+      statusText: HttpCode[409].statusText,
+      total: undefined,
+      data: undefined,
+      message: message
+    });
   }
 
-  fail(message) {
-    throw DbResult(
-      false,
-      HttpCode[500].code,
-      HttpCode[500].statusText,
-      undefined,
-      undefined,
-      message
-    );
+  fail({ message } = {}) {
+    throw DbResult({
+      isSuccess: false,
+      statusCode: HttpCode[500].code,
+      statusText: HttpCode[500].statusText,
+      total: undefined,
+      data: undefined,
+      message: message
+    });
   }
 }
 
-function DbResult(isSuccess, statusCode, statusText, total, data, message) {
+function DbResult({ isSuccess, statusCode, statusText, total, data, message }) {
   class DbResult {
-    constructor(isSuccess, statusCode, statusText, total, data, message) {
+    constructor({ isSuccess, statusCode, statusText, total, data, message }) {
       this.success = isSuccess;
       this.statusCode = statusCode;
       this.statusText = statusText;
@@ -102,7 +103,7 @@ function DbResult(isSuccess, statusCode, statusText, total, data, message) {
   }
 
   return Object.freeze(
-    new DbResult(isSuccess, statusCode, statusText, total, data, message)
+    new DbResult({ isSuccess, statusCode, statusText, total, data, message })
   );
 }
 
