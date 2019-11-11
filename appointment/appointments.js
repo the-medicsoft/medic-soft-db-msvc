@@ -6,12 +6,13 @@ const appointment = new Appointment();
 class Appointments extends BaseController {
   async createAppointment(req, res) {
     try {
-      let result = await appointment.createAppointment(req.body);
+      let result = await appointment.createAppointment({
+        appointment: req.body
+      });
 
-      super.sendResponse(req, res, result);
-    }
-    catch (err) {
-      super.sendErrorResponse(req, res, err);
+      super.sendResponse({ req, res, response: result });
+    } catch (err) {
+      super.sendErrorResponse({ req, res, errResponse: err });
     }
   }
 
@@ -19,9 +20,9 @@ class Appointments extends BaseController {
     try {
       let result = await appointment.getAppointments();
 
-      super.sendResponse(req, res, result);
+      super.sendResponse({ req, res, response: result });
     } catch (err) {
-      super.sendErrorResponse(req, res, err);
+      super.sendErrorResponse({ req, res, errResponse: err });
     }
   }
 }

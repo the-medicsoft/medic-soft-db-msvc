@@ -1,4 +1,5 @@
 const { db, BaseModel } = require('../db');
+
 const { Schema, model } = db.mongoose;
 
 const AppointmentSchema = new Schema({
@@ -36,14 +37,13 @@ class Appointment extends BaseModel {
     super(model('Appointment', AppointmentSchema));
   }
 
-  async createAppointment(appointment) {
-    let result = await super.create(appointment);
+  async createAppointment({ appointment }) {
+    let result = await super.create({ body: appointment });
 
     if (result) {
-      return super.success(undefined, undefined, result);
-    }
-    else {
-      super.fail('appointment not created');
+      return super.success({ data: result });
+    } else {
+      super.fail({ message: 'appointment not created' });
     }
   }
 
@@ -67,11 +67,11 @@ class Appointment extends BaseModel {
     });
 
     if (appointments.length) {
-      return super.success(appointments.length, appointments);
+      return super.success({ total: appointments.length, data: appointments });
     } else if (appointments.length === 0) {
-      super.notFound('No Appointments Found!');
+      super.notFound({ message: 'No Appointments Found!' });
     } else {
-      super.fail('failed to get all appointment');
+      super.fail({ message: 'failed to get all appointment' });
     }
   }
 }

@@ -43,17 +43,17 @@ class Doctor extends BaseModel {
     });
 
     if (doctors.length) {
-      return super.success(doctors.length, doctors, undefined);
+      return super.success({ total: doctors.length, data: doctors });
     } else {
       super.fail();
     }
   }
 
-  async getDoctorByQuery(query) {
+  async getDoctorByQuery({ query }) {
     let doctors = undefined;
 
     if (!('location' in query)) {
-      doctors = await super.readByQuery(query);
+      doctors = await super.readByQuery({ query });
     } else {
       const coordinates = query.location.split(',');
 
@@ -70,7 +70,7 @@ class Doctor extends BaseModel {
         }
       };
 
-      doctors = await super.readByQuery(geoQuery);
+      doctors = await super.readByQuery({ query: geoQuery });
     }
 
     await this.Model.populate(doctors, {
@@ -78,62 +78,65 @@ class Doctor extends BaseModel {
     });
 
     if (doctors.length) {
-      return super.success(doctors.length, doctors, undefined);
+      return super.success({ total: doctors.length, data: doctors });
     } else {
       super.notFound();
     }
   }
 
-  async createDoctor(newDoctor) {
+  async createDoctor({ newDoctor }) {
     // if doctor exists then do not insert and, prompt user with message
     let { email } = newDoctor.contacts;
 
     let doctorExists = await this.Model.findOne({ 'contacts.email': email });
 
     if (doctorExists && doctorExists.contacts.email === email) {
-      super.conflict(`Doctor with email ${email} already exists!`);
+      super.conflict({ message: `Doctor with email ${email} already exists!` });
     }
 
-    let doctor = await super.create(newDoctor);
+    let doctor = await super.create({ body: newDoctor });
 
     if (doctor && doctor.contacts.email === email) {
-      return super.success(undefined, doctor, `Doctor Inserted`);
+      return super.success({ data: doctor, message: 'Doctor Inserted' });
     } else {
       super.fail();
     }
   }
 
-  async updateDoctorByEmail(email, updateDoctorWith) {
+  async updateDoctorByEmail({ email, body }) {
     let doctor = await this.Model.findOne({ 'contacts.email': email });
 
     if (doctor && doctor.contacts.email === email) {
-      let result = await super.update(doctor._id, updateDoctorWith);
+      let result = await super.update({ id: doctor._id, body });
 
       if (result) {
-        return super.success(undefined, result, 'Doctor Updated');
+        return super.success({ data: result, message: 'Doctor Updated' });
       } else {
-        super.fail('Doctor not updated!');
+        super.fail({ message: 'Doctor not updated!' });
       }
     } else {
-      super.notFound(`Doctor with email ${email} not found!`);
+      super.notFound({ message: `Doctor with email ${email} not found!` });
     }
   }
 
-  async deleteDoctorByEmail(email) {
+  async deleteDoctorByEmail({ email }) {
     const setActiveToFalse = { isActive: false };
 
     let doctor = await this.Model.findOne({ 'contacts.email': email });
 
     if (doctor && doctor.contacts.email === email) {
-      let result = await super.delete(doctor._id, setActiveToFalse);
+      let result = await super.delete({
+        id: doctor._id,
+        deleteDoc: setActiveToFalse
+      });
 
       if (result && result.isActive === false) {
-        return super.success(undefined, undefined, 'Doctor Deleted');
+        return super.success({ message: 'Doctor Deleted' });
       } else {
-        super.fail('Doctor not deleted!');
+        super.fail({ message: 'Doctor not deleted!' });
       }
     } else {
-      super.notFound(`Doctor with email ${email} not found!`);
+      super.notFound({ message: `Doctor with email ${email} not found!` });
     }
   }
 }

@@ -17,21 +17,20 @@ class Department extends BaseModel {
   async getDepartments() {
     const departments = await super.read();
 
-    return super.success(
-      departments.length,
-      departments,
-      undefined
-    );
+    return super.success({
+      total: departments.length,
+      data: departments
+    });
   }
 
   // todo: Complete Dept Update Implementation
-  async updateDepartment(deptName, updateDepartment) {
+  async updateDepartment({ deptName, body }) {
     const departmentDoc = await this.Model.findOne({ deptName });
-    await super.update(departmentDoc._id, updateDepartment);
+    await super.update({ id: departmentDoc._id, body: body });
   }
 
-  async createDepartment(departments) {
-    const result = await super.create(departments);
+  async createDepartment({ body }) {
+    const result = await super.create({ body });
     return result;
   }
 }
