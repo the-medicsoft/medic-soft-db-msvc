@@ -2,14 +2,13 @@
   "name": "medic-soft-db-msvc",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon index.js",
     "lint": "eslint **/*.js --ignore-path .gitignore .",
     "lintFix": "eslint --fix **/*.js --ignore-path .gitignore .",
-    "seed:run": "cross-env SEED_OPTION=run node seeders/seeder.js",
-    "seed:drop": "cross-env SEED_OPTION=drop node seeders/seeder.js"
+    "seed:run": "cross-env SEED_OPTION=run node src/seeders/seeder.js",
+    "seed:drop": "cross-env SEED_OPTION=drop node src/seeders/seeder.js"
   },
   "contributors": [
     {
@@ -17,10 +16,6 @@
       "email": "aakashvermaee@gmail.com"
     }
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/the-medicsoft/medic-soft-db-msvc.git"
-  },
   "keywords": [
     "Microservice",
     "Mongo",
@@ -31,14 +26,10 @@
   "license": "ISC",
   "homepage": "https://github.com/the-medicsoft/medic-soft-db-msvc.git#readme",
   "dependencies": {
-    "dotenv": "^8.1.0",
-    "fastify": "^2.8.0",
-    "fastify-cors": "^2.1.3",
-    "mongoose": "^5.7.0",
-    "pino": "^5.13.2",
-    "pino-pretty": "^3.2.1"
+    "@the-medicsoft/webapi-framework": "git+https://github.com/the-medicsoft/webapi-framework.git#logger"
   },
   "devDependencies": {
+    "dotenv": "^8.1.0",
     "cross-env": "^6.0.3",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
@@ -52,10 +43,6 @@
     "faker": "^4.1.0",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2"
-  },
-  "mdSeed": {
-    "seedersFolder": "./seeders",
-    "customSeederTemplate": "./md-seed-template.ejs"
   },
   "nodemonConfig": {
     "env": {

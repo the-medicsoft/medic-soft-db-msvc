@@ -1,4 +1,6 @@
-const { Appointments, AppointmentStatus } = require('../../appointment');
+const { Appointments } = require('../../src/controllers');
+const { AppointmentStatus } = require('../../src/models');
+
 const { userBaseSchema } = require('./routeschemas');
 
 const appointmentRouteSchema = {

@@ -1,4 +1,4 @@
-const { Doctors } = require('../../doctor');
+const { Doctors } = require('../../src/controllers');
 const { userBaseSchema } = require('./routeschemas');
 
 const doctorRequestBodySchema = {

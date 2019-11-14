@@ -1,4 +1,4 @@
-const { Clients } = require('../../client');
+const { Clients } = require('../../src/controllers');
 const { userBaseSchema } = require('./routeschemas');
 
 const clientRequestBodySchema = {

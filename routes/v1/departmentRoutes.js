@@ -1,4 +1,4 @@
-const { Departments } = require('../../department');
+const { Departments } = require('../../src/controllers');
 
 module.exports = function(fastify, opts, next) {
   const departments = new Departments();
