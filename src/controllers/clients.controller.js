@@ -1,4 +1,8 @@
 const { BaseController } = require('@the-medicsoft/webapi-framework');
+const {
+  DbResultErrors
+} = require('@the-medicsoft/webapi-framework/lib/helpers');
+
 const { Client } = require('../models');
 
 const client = new Client();
@@ -10,14 +14,20 @@ class Clients extends BaseController {
 
       if (Object.keys(req.query).length) {
         response = await getClientByQuery({ req });
-        return super.sendResponse({ req, res, response });
+
+        return super.success({
+          req,
+          res,
+          total: response.length,
+          data: response
+        });
       }
 
       response = await client.getClients();
 
-      super.sendResponse({ req, res, response });
+      super.success({ req, res, total: response.length, data: response });
     } catch (err) {
-      super.sendErrorResponse({ req, res, errResponse: err });
+      throw err;
     }
   }
 
@@ -25,9 +35,11 @@ class Clients extends BaseController {
     try {
       let response = await client.createClient({ newClient: req.body });
 
-      super.sendResponse({ req, res, response });
+      if (response && typeof response !== 'string') {
+        super.success({ req, res, message: 'Client Inserted!' });
+      }
     } catch (err) {
-      super.sendErrorResponse({ req, res, errResponse: err });
+      throw err;
     }
   }
 
@@ -38,9 +50,9 @@ class Clients extends BaseController {
         body: req.body
       });
 
-      super.sendResponse({ req, res, response });
+      super.success({ req, res, message: 'Client Updated!' });
     } catch (err) {
-      super.sendErrorResponse({ req, res, errResponse: err });
+      throw err;
     }
   }
 
@@ -50,7 +62,7 @@ class Clients extends BaseController {
 
       super.sendResponse({ req, res, response });
     } catch (err) {
-      super.sendErrorResponse({ req, res, errResponse: err });
+      super.fail({ req, res, message: err.message });
     }
   }
 }

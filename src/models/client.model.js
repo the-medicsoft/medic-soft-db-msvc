@@ -1,4 +1,8 @@
 const { BaseModel } = require('@the-medicsoft/webapi-framework');
+const {
+  DB_RESULT_ERROR_CONFLICT,
+  DB_RESULT_ERROR_NOT_FOUND
+} = require('@the-medicsoft/webapi-framework/lib/helpers').DbResultErrors;
 const { model } = require('mongoose');
 
 const { ClientSchema } = require('../schemas');
@@ -17,36 +21,29 @@ class Client extends BaseModel {
     });
 
     if (clientExists && clientExists.contacts.email === email) {
-      super.conflict({ message: `Client with email ${email} already exists!` });
+      const message = `Client with email ${email} already exists!`;
+      throw new DB_RESULT_ERROR_CONFLICT(message);
     }
 
     let client = await super.create({ body: newClient });
 
-    if (client && client.contacts.email === email) {
-      return super.success({ data: client, message: 'Client Inserted' });
-    } else {
-      super.fail();
-    }
+    return client && client.contacts.email === email;
   }
 
   async getClients() {
     const response = await super.read();
 
-    if (response.length) {
-      return super.success({ total: response.length, data: response });
-    } else {
-      super.fail();
-    }
+    return response;
   }
 
   async getClientByQuery({ query }) {
     const response = await super.readByQuery({ query });
 
-    if (response.length) {
-      return super.success({ total: response.length, data: response });
-    } else {
-      super.notFound();
+    if (!response.length) {
+      throw new DB_RESULT_ERROR_NOT_FOUND('Client Not Found!');
     }
+
+    return response;
   }
 
   async updateClient({ email, body }) {
@@ -58,13 +55,10 @@ class Client extends BaseModel {
         body
       });
 
-      if (result) {
-        return super.success({ data: result, message: 'Client Inserted' });
-      } else {
-        super.fail({ message: 'Client not updated!' });
-      }
+      return result;
     } else {
-      super.notFound({ message: `Client with email ${email} not found!` });
+      const message = `Client with email ${email} not found!`;
+      throw new DB_RESULT_ERROR_NOT_FOUND(message);
     }
   }
 
@@ -76,6 +70,7 @@ class Client extends BaseModel {
     if (client && client.contacts.email === email) {
       const response = await super.delete({
         id: client._id,
+        useSoftDelete: true,
         deleteDoc: setActiveToFalse
       });
 

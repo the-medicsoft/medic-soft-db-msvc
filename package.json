@@ -26,7 +26,7 @@
   "license": "ISC",
   "homepage": "https://github.com/the-medicsoft/medic-soft-db-msvc.git#readme",
   "dependencies": {
-    "@the-medicsoft/webapi-framework": "git+https://github.com/the-medicsoft/webapi-framework.git#logger"
+    "@the-medicsoft/webapi-framework": "git+https://github.com/the-medicsoft/webapi-framework.git#framework-restructuring"
   },
   "devDependencies": {
     "dotenv": "^8.1.0",

@@ -1,11 +1,14 @@
-const app = require('@the-medicsoft/webapi-framework').server;
+const { server } = require('@the-medicsoft/webapi-framework');
 
 // hook registration
-require('./hooks/hooks')(app);
+require('./hooks/hooks')(server);
 
 // register API routes
-require('./routes/routesRegister')(app);
+require('./routes/routesRegister')(server);
 
-app.get('/', (req, res) => res.send('Welcome to The MedicSoft'));
+// logger plugin
+// require("@the-medicsoft/logger")(server);
 
-exports.app = app;
+server.get('/', (req, res) => res.send('Welcome to The MedicSoft'));
+
+exports.server = server;
