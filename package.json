@@ -32,7 +32,7 @@
   "homepage": "https://github.com/the-medicsoft/medic-soft-db-msvc.git#readme",
   "dependencies": {
     "dotenv": "^8.1.0",
-    "fastify": "^2.8.0",
+    "fastify": "^2.15.1",
     "fastify-cors": "^2.1.3",
     "mongoose": "^5.7.5",
     "pino": "^5.13.2",
